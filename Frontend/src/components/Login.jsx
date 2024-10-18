@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import '../index.css'
+
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -38,11 +40,12 @@ export default function Login() {
         throw new Error("Credenciais inválidas");
       }
     } catch (err) {
-      setError("Login falhou. Verifica as tuas credenciais.");
+      setError("O seu Login Falhou. Verifique as suasx credenciais.");
     }
   };
 
   return (
+    
     <div className="flex justify-center items-center h-screen">
       <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
