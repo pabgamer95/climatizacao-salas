@@ -1,8 +1,10 @@
+
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import useUsers from "../getBackend/users";
+import Cookies from 'js-cookie';
 import '../index.css'
-
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -12,11 +14,14 @@ export default function Login() {
   const navigate = useNavigate();
 
   // Defina o array de utilizadores aqui com senhas
-  const users = [
+  const { data: users, loading} = useUsers();
+
+  if (loading) return <p>Loading...</p>;
+  /* const users = [
     { email: "admin@example.com", role: "admin", password: "admin123" },
     { email: "client@example.com", role: "client", password: "client123" },
     { email: "technician@example.com", role: "technician", password: "tech123" },
-  ];
+  ]; */
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,6 +36,7 @@ export default function Login() {
         // Redirecionar com base no cargo do utilizador
         if (foundUser.role === 'admin') {
           navigate("/admin");
+          
         } else if (foundUser.role === 'client') {
           navigate("/client");
         } else if (foundUser.role === 'technician') {
@@ -45,7 +51,6 @@ export default function Login() {
   };
 
   return (
-    
     <div className="flex justify-center items-center h-screen">
       <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>

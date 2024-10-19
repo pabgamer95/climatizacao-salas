@@ -1,50 +1,39 @@
-import React, { useState, useEffect } from 'react';
+
+import React from 'react';
+import useUsers from '../getBackend/users';
+
 export default function AdminPage() {
+  const { data, loading, error } = useUsers();
 
-  const [data, setData] = useState([]);
-  
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('http://localhost:8081/users');
-        const result = await response.json();
-        setData(result);
-        console.log(result);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error fetching data: {error.message}</p>;
 
-    fetchData();
-  }, []);
+  return (
+    <div className="p-8">
+      <h1 className="text-3xl font-bold">Página de Admin</h1>
+      <p>Bem-vindo, Admin! Aqui podes gerir o sistema.</p>
+      <p>123</p>
 
-    return (
-      <div className="p-8">
-        <h1 className="text-3xl font-bold">Página de Admin</h1>
-        <p>Bem-vindo, Admin! Aqui podes gerir o sistema.</p>
-        <p>123</p>
- 
-        <div style={{padding:"50px"}}>
-          <table>
-            <thead>
+      <div style={{ padding: "50px" }}>
+        <table>
+          <thead>
               <th>ID</th>
               <th>Name</th>
               <th>Email</th>
               <th>Role</th>
-            </thead>
-            <tbody>
-              {data.map((d, i) => (
-                <tr key={i}>
-                  <th>{d.id}</th>
-                  <th>{d.nome}</th>
-                  <th>{d.email}</th>
-                  <th>{d.role}</th>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+          </thead>
+          <tbody>
+            {data.map((d, i) => (
+              <tr key={i}>
+                <th>{d.id}</th>
+                <th>{d.nome}</th>
+                <th>{d.email}</th>
+                <th>{d.role}</th>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-    );
-  }
-  
+    </div>
+  );
+}

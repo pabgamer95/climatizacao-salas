@@ -5,7 +5,7 @@ export default function PrivateRoute({ children, role }) {
   const { user } = useAuth();
 
   if (!user) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/" />;
   }
 
   if (user.role !== role) {
