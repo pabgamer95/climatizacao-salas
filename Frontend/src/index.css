@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 
-body {
+body.login {
     font-family: Verdana, sans-serif;
     background-image: url(images/imagemInicio.webp);
     background-repeat: no-repeat;
