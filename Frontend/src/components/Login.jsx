@@ -13,14 +13,14 @@ export default function Login() {
   const navigate = useNavigate();
 
   // Defina o array de utilizadores aqui com senhas
-  const { data: users, loading} = useUsers();
+  //const { data: users, loading} = useUsers();
 
-  if (loading) return <p>Loading...</p>;
-  /* const users = [
+ // if (loading) return <p>Loading...</p>;
+   const users = [
     { email: "admin@example.com", role: "admin", password: "admin123" },
     { email: "client@example.com", role: "client", password: "client123" },
     { email: "technician@example.com", role: "technician", password: "tech123" },
-  ]; */
+  ]; 
 
   const handleSubmit = async (e) => {
     e.preventDefault();

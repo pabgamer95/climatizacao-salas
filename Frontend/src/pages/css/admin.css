@@ -1,0 +1,14 @@
+body {
+    background-color: greenyellow;
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+.navBar {
+    background-color: #333;
+    color: white; 
+    display: block;
+    padding: 20px;
+    margin: 0;
+    font-size: 20px; 
+}
