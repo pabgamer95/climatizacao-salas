@@ -2,6 +2,7 @@
 import React from 'react';
 import useUsers from '../getBackend/users';
 import  './css/admin.css';
+import './imagens/logoteste.webp';
 
 export default function AdminPage() {
  // const { data, loading, error } = useUsers();
@@ -22,17 +23,19 @@ export default function AdminPage() {
       <header>
         
         <nav className="navBar">
-          <img src="./logo.svg" alt="" />
-            
+            <img className="logo" src="logoteste.webp" alt="" /> 
             <h1 className="nomeApp">AMBIENTRACK</h1>
+            <a href="#" className="hiperLinks">UTILIZADORES</a>
+            <a href="#" className='hiperLinks'>DISPOSITIVOS</a>
+
         </nav>
       </header>
     
-      <h1 className="text-3xl font-bold">Admin Page</h1>
+      <h1 className="txt1">Admin Page</h1>
       
 
       <div style={{ padding: "50px" }}>
-        <table>
+        <table className="tabela1">
           <thead>
               <th>ID</th>
               <th>Name</th>
