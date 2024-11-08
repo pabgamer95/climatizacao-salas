@@ -1,17 +1,18 @@
 // src/compoents/Auth.jsx
 import Cookies from 'js-cookie';
 
-// Define o token no cookie
-export const setAuthToken = (token) => {
-    Cookies.set('authToken', token, { expires: 7 }); // Token expira em 7 dias
-};
+// Define o token no cookie com a `role` do utilizador
+/* export const setAuthToken = (email, role) => {
+    Cookies.set('authToken', JSON.stringify({ email, role }), { expires: 1 }); // Expira em 1 dias
+}; */
 
 // Obtém o token do cookie
 export const getAuthToken = () => {
-    return Cookies.get('authToken');
+    const token = Cookies.get('loggedInUser');
+    return token ? JSON.parse(token) : null; // Retorna o token como um objeto
 };
 
-// Remove o token do cookie (usado no logout)
+// Remove o token do cookie
 export const removeAuthToken = () => {
-    Cookies.remove('authToken');
+    Cookies.remove('loggedInUser');
 };

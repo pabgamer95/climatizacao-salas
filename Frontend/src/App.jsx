@@ -4,6 +4,7 @@ import Login from './components/Login';
 import AdminPage from './pages/AdminPage';
 import ClientPage from './pages/ClientPage';
 import TechnicianPage from './pages/TechnicianPage';
+import Register from './pages/teste';
 import PrivateRoute from './components/PrivateRoute';
 
 function App() {
@@ -19,9 +20,9 @@ function App() {
           <Route
             path="/admin"
             element={
-              <PrivateRoute role="admin">
+             // <PrivateRoute role="admin">
                 <AdminPage />
-              </PrivateRoute>
+              //</PrivateRoute>
             }
           />
 
@@ -29,9 +30,9 @@ function App() {
           <Route
             path="/client"
             element={
-              <PrivateRoute role="client">
+             // <PrivateRoute role="client">
                 <ClientPage />
-              </PrivateRoute>
+              //</PrivateRoute>
             }
           />
 
@@ -39,11 +40,22 @@ function App() {
           <Route
             path="/technician"
             element={
-              <PrivateRoute role="technician">
+             // <PrivateRoute role="technician">
                 <TechnicianPage />
-              </PrivateRoute>
+              //</PrivateRoute>
             }
           />
+
+          <Route
+            path="/test"
+            element={
+             // <PrivateRoute role="technician">
+                <Register />
+              //</PrivateRoute>
+            }
+          />
+          
+
         </Routes>
       </Router>
     </AuthProvider>
