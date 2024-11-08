@@ -1,4 +1,3 @@
-
 import React, {useState} from 'react';
 import axios from 'axios';
 import useUsers from '../Backend/users';
@@ -21,7 +20,7 @@ export default function AdminPage() {
 
 
   const handleEdit = (id) =>{
-    axios.get('http://localhost:8081/users'+id)
+    axios.get('http://localhost:8081/users/:id')
     .then(res => {
       console.log(res.data)
       
@@ -30,7 +29,7 @@ export default function AdminPage() {
   }
 
   const handleUpdate = () => {
-    axios.put('http://localhost:8081/users'+ editId, {id:editId, nome, email, role})
+    axios.put('http://localhost:8081/users/:id', {id:editId, nome, email, role})
     .then(res => {
       console.log(res)
       setEditID(-1)
@@ -61,6 +60,7 @@ export default function AdminPage() {
               <th>Name</th>
               <th>Email</th>
               <th>Role</th>
+              <th>Changes</th>
           </thead>
           <tbody>
             {
