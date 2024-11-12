@@ -4,7 +4,7 @@ import Login from './components/Login';
 import AdminPage from './pages/AdminPage';
 import ClientPage from './pages/ClientPage';
 import TechnicianPage from './pages/TechnicianPage';
-import Register from './pages/teste';
+import Register from './pages/Register';
 import PrivateRoute from './components/PrivateRoute';
 
 function App() {
@@ -47,7 +47,7 @@ function App() {
           />
 
           <Route
-            path="/test"
+            path="/register"
             element={
              // <PrivateRoute role="technician">
                 <Register />

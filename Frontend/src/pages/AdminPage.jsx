@@ -6,12 +6,12 @@ import  './css/admin.css';
 import './imagens/logoteste.webp';
 
 export default function AdminPage() {
- const {data, loading, error } = useUsers();
+ const {data, loading, error, setData } = useUsers([]);
  const [editId, setEditID] = useState(-1);
  const [nome, setNome] = useState()
  const [email ,setEmail] = useState()
-/*  const [newNome, newSetNome] = useState()
- const [newEmail ,newSetEmail] = useState() */
+ const [unome, usetnome] = useState()
+ const [uemail ,usetmail] = useState()
  const [role , setRole] = useState()
 
  if (loading) return <p>Loading...</p>;
@@ -21,21 +21,67 @@ export default function AdminPage() {
 
 
   const handleEdit = (id) =>{
-    axios.get('http://localhost:8081/users'+id)
+    axios.get('http://localhost:8081/users/' + id)
     .then(res => {
       console.log(res.data)
+      usetnome(res.data.nome); // Atualiza o estado com o nome do usuário
+      usetmail(res.data.email); // Atualiza o estado com o email do usuário
+      setRole(res.data.role);   // Atualiza o estado com o role do usuário
       
     })
+    .catch(er => console.log(er));
     setEditID(id)
   }
 
   const handleUpdate = () => {
-    axios.put('http://localhost:8081/users'+ editId, {id:editId, nome, email, role})
-    .then(res => {
-      console.log(res)
-      setEditID(-1)
-    }).catch(err => console.log(err));
-  }
+    const updatedUser = {
+      nome: unome,
+      email: uemail,
+      role: role
+    };
+  
+    // Envia a requisição PUT com os dados de atualização
+    axios.put('http://localhost:8081/users/' + editId, updatedUser)
+      .then(res => {
+        console.log('User updated:', res.data);
+        setEditID(-1);  // Limpa o campo de edição
+  
+        // Após o sucesso do update, recarrega a lista de usuários
+        axios.get('http://localhost:8081/users')
+          .then(res => {
+            // Atualiza o estado com a lista de usuários atualizada
+            const updatedData = data.filter(user => user.editId !== editId);
+          setData(updatedData);  // Atualiza o estado com a nova lista de utilizadores
+        })
+        .catch(er => {
+          console.error(er);
+          console.log('Ocorreu um erro ao tentar atualizar o utilizador.');
+        });
+  
+      })
+      .catch(err => {
+        console.error('Erro ao atualizar o usuário:', err);
+      });
+  };
+  
+
+  const handleDelete = (id) => {
+    // Confirmação antes de excluir
+    if (window.confirm('Você tem certeza que deseja excluir este utilizador?')) {
+      axios.delete(`http://localhost:8081/users/` + id)
+        .then(res => {
+          console.log('utilizador excluído com sucesso!');
+          // Atualiza o estado removendo o utilizador deletado
+          const updatedData = data.filter(user => user.id !== id);
+          setData(updatedData);  // Atualiza o estado com a nova lista de utilizadores
+        })
+        .catch(er => {
+          console.error(er);
+          console.log('Ocorreu um erro ao tentar excluir o utilizador.');
+        });
+    }
+  };
+ 
 
   return (
     
@@ -57,7 +103,6 @@ export default function AdminPage() {
       <div style={{ padding: "50px" }}>
         <table className="tabela1">
           <thead>
-              <th>ID</th>
               <th>Name</th>
               <th>Email</th>
               <th>Role</th>
@@ -67,10 +112,25 @@ export default function AdminPage() {
               data.map((d, i) => (
                 d.id === editId ? 
                 <tr>
-                  <th>{d.id}</th>
-                  <th><input type="text" value={d.nome} onChange = {e => setNome(e.target.value)}/></th>
-                  <th><input type="text" value={d.email} onChange = {e => setEmail(e.target.value)}/></th>
-                  <th><select value={d.role} onChange = {e => setRole(e.target.value)}>
+                  <th>
+                    <input 
+                      type="text" 
+                      value={unome || ''}  // Garante que o campo tem um valor inicial
+                      onChange={e => usetnome(e.target.value)}  // Atualiza o estado ao digitar
+                    />
+                  </th>
+                  <th>
+                    <input 
+                      type="text" 
+                      value={uemail || ''} // Garante que o campo tem um valor inicial
+                      onChange={e => usetmail(e.target.value)}  // Atualiza o estado ao digitar
+                    />
+                  </th>
+                  <th>
+                    <select 
+                      value={role || ''}  // Garante que o campo tem um valor inicial
+                      onChange={e => setRole(e.target.value)}  // Atualiza o estado ao mudar a opção
+                    >
                     <option value="client">Cliente</option>
                     <option value="technician">Técnico</option>
                     <option value="admin">Admin</option>
@@ -79,13 +139,14 @@ export default function AdminPage() {
                 </tr>
                 :
                 <tr key={i}>
-                  <th>{d.id}</th>
                   <th>{d.nome}</th>
                   <th>{d.email}</th>
                   <th>{d.role}</th>
                   <th>
-                    <button onClick={() => handleEdit(d.id)}>edit</button>
-                    <button>delete</button>
+                    <button onClick={() => handleEdit(d.id)}>Edit</button>
+                    <br />
+
+                    <button onClick={() => handleDelete(d.id)}>Delete</button>
                   </th>
                 </tr> 
               ))

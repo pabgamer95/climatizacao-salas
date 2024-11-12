@@ -8,13 +8,19 @@ const Register = () => {
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState(''); // Default role
+    const [role, setRole] = useState('client'); // Default role
 
     const handleSubmit = (e) => {
         e.preventDefault()
 
         const id = data.length + 1
-        axios.post('http://localhost:8081/users', {id: id, name: nome, email: email, password: password, role: role})
+        axios
+            .post('http://localhost:8081/users', { id: id, nome: nome, email: email, password: password, role: role })
+            .then(() => console.log('Usuário registrado com sucesso!'))
+            .catch((error) => {
+                console.error('Erro ao registrar o usuário:', error);
+                console.log('Erro no registro.');
+  });
         
     };
 
@@ -57,7 +63,10 @@ const Register = () => {
                 <select
                     id="role"
                     value={role}
-                    onChange={(e) => setRole(e.target.value)}
+                    onChange={(e) => {
+                        setRole(e.target.value);
+                        console.log("Role selecionado:", e.target.value); // Verifique o valor selecionado
+                    }}
                     style={styles.input}
                 >
                     <option value="client">Cliente</option>
