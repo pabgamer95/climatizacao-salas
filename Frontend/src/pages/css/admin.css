@@ -42,7 +42,7 @@ text-decoration: underline;
   text-align: center;
   font-size: 2.5em;
   color: #333;
-  margin-top: 80px;
+  margin-top: 90px;
 }
 
 .tabela1 {
@@ -69,6 +69,35 @@ text-decoration: underline;
   background-color: #f1f1f1;
 }
 
+.btnAcao {
+  display: flex;
+}
+
+.btnEliminar, .btnEditar {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  color: #FFF;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btnEditar {
+  background-color: #4CAF50
+}
+
+.btnEditar:hover {
+  background-color: #45A049;
+}
+
+.btnEliminar {
+  background-color: #E74C3C;
+  margin-left: 10px;
+}
+
+.btnEliminar:hover {
+  background-color: #C0392B;
+}
 
 
 

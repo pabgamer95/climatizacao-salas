@@ -56,37 +56,40 @@ export default function AdminPage() {
       <div style={{ padding: "50px" }}>
         <table className="tabela1">
           <thead>
+            <tr>
               <th>ID</th>
               <th>Name</th>
               <th>Email</th>
               <th>Role</th>
               <th>Changes</th>
+            </tr>
           </thead>
           <tbody>
             {
               data.map((d, i) => (
                 d.id === editId ? 
                 <tr>
-                  <th>{d.id}</th>
-                  <th><input type="text" value={d.nome} onChange = {e => setNome(e.target.value)}/></th>
-                  <th><input type="text" value={d.email} onChange = {e => setEmail(e.target.value)}/></th>
-                  <th><select value={d.role} onChange = {e => setRole(e.target.value)}>
+                  <td>{d.id}</td>
+                  <td><input type="text" value={d.nome} onChange = {e => setNome(e.target.value)}/></td>
+                  <td><input type="text" value={d.email} onChange = {e => setEmail(e.target.value)}/></td>
+                  <td><select value={d.role} onChange = {e => setRole(e.target.value)}>
                     <option value="client">Cliente</option>
                     <option value="technician">Técnico</option>
                     <option value="admin">Admin</option>
-                </select></th>
-                  <th><button onClick={handleUpdate}>Update</button></th>
+                </select>
+                </td>
+                  <td><button className='btnEditar' onClick={handleUpdate}>Update</button></td>
                 </tr>
                 :
                 <tr key={i}>
-                  <th>{d.id}</th>
-                  <th>{d.nome}</th>
-                  <th>{d.email}</th>
-                  <th>{d.role}</th>
-                  <th>
-                    <button onClick={() => handleEdit(d.id)}>edit</button>
-                    <button>delete</button>
-                  </th>
+                  <td>{d.id}</td>
+                  <td>{d.nome}</td>
+                  <td>{d.email}</td>
+                  <td>{d.role}</td>
+                  <td btnAcao>
+                    <button className='btnEditar' onClick={() => handleEdit(d.id)}>Edit</button> 
+                    <button className='btnEliminar'>Delete</button>
+                  </td>
                 </tr> 
               ))
             }
