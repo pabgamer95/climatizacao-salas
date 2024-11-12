@@ -145,11 +145,11 @@ export default function AdminPage() {
                   <td>{d.nome}</td>
                   <td>{d.email}</td>
                   <td>{d.role}</td>
-                  <td>
-                    <button onClick={() => handleEdit(d.id)}>Edit</button>
+                  <td className='btnAcao'>
+                    <button className="btnEditar" onClick={() => handleEdit(d.id)}>Edit</button>
                     <br />
 
-                    <button onClick={() => handleDelete(d.id)}>Delete</button>
+                    <button className="btnEliminar" onClick={() => handleDelete(d.id)}>Delete</button>
                   </td>
                 </tr> 
               ))
