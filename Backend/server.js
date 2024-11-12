@@ -4,11 +4,12 @@ const cors = require('cors')
 
 const app = express()
 app.use(cors())
+app.use(express.json())
 
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'root',
+    password: 'ShadowKnight1305+',
     database: 'climatizacao_salas',
 })
 
@@ -49,30 +50,37 @@ app.post('/users', (req, res) => {
     });
 });
 
-app.put('/users:id', (req, res) => {
-    const sql = "UPDATE users SET `nome` = ?, `email` = ?, `password` = ?, `role` = ? WHERE `id` = ?";
+app.put('/users/:id', (req, res) => {
+    console.log("Updating user with ID:", req.params.id); // Debug
+    console.log("Data received for update:", req.body); // Debug
 
+    const sql = "UPDATE users SET `nome` = ?, `email` = ?, `role` = ? WHERE `id` = ?";
+    
     const values = [
         req.body.nome,
         req.body.email,
-        req.body.password,
         req.body.role
     ];
 
-    db.query(sql, [...values, req.params.id], (err) => {
-        if (err) return res.json(err);
+    db.query(sql, [...values, req.params.id], (err, result) => {
+        if (err) {
+            console.error("Error updating user:", err); // Debugging error
+            return res.status(500).json({ error: "Erro ao atualizar utilizador", details: err });
+        }
 
-        return res.status(200).json("Utilizador atualizado com sucesso.")
-    })
-})
+        console.log("User updated successfully:", result);
+        return res.status(200).json({ success: "Utilizador atualizado com sucesso." });
+    });
+});
 
-app.delete('/users:id', (req, res) => {
+
+app.delete('/users/:id', (req, res) => {
     const sql = "DELETE FROM users WHERE `id` = ?";
 
     db.query(sql, [req.params.id], (err) => {
         if (err) return res.json(err);
 
-        return res.status(200).json("Utilizador deletado com sucesso.")
+        return res.status(200).json({ success: "Utilizador deletado com sucesso." })
     })
 })
 

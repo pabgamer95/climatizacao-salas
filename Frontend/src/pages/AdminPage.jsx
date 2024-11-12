@@ -33,51 +33,46 @@ export default function AdminPage() {
   }
 
   const handleUpdate = () => {
-    const updatedUser = {
-      nome: unome,
-      email: uemail,
-      role: role
-    };
-  
-    // Envia a requisição PUT com os dados de atualização
-    axios.put('http://localhost:8081/users/' + editId, updatedUser)
-      .then(res => {
-        console.log('User updated:', res.data);
-        setEditID(-1);  // Limpa o campo de edição
-  
-        // Após o sucesso do update, recarrega a lista de usuários
-        axios.get('http://localhost:8081/users')
-          .then(res => {
-            // Atualiza o estado com a lista de usuários atualizada
-            const updatedData = data.filter(user => user.editId !== editId);
-          setData(updatedData);  // Atualiza o estado com a nova lista de utilizadores
-        })
-        .catch(er => {
-          console.error(er);
-          console.log('Ocorreu um erro ao tentar atualizar o utilizador.');
-        });
-  
-      })
-      .catch(err => {
-        console.error('Erro ao atualizar o usuário:', err);
-      });
-  };
-  
+    if (!unome || !uemail || !role) {
+        console.error("Erro: Campos obrigatórios estão vazios");
+        alert("Todos os campos são obrigatórios para a atualização.");
+        return;
+    }
 
-  const handleDelete = (id) => {
-    // Confirmação antes de excluir
-    if (window.confirm('Você tem certeza que deseja excluir este utilizador?')) {
-      axios.delete(`http://localhost:8081/users/` + id)
+    const updatedUser = {
+        nome: unome,
+        email: uemail,
+        role: role
+    };
+
+    axios.put(`http://localhost:8081/users/${editId}`, updatedUser)
         .then(res => {
-          console.log('utilizador excluído com sucesso!');
-          // Atualiza o estado removendo o utilizador deletado
-          const updatedData = data.filter(user => user.id !== id);
-          setData(updatedData);  // Atualiza o estado com a nova lista de utilizadores
+            console.log("User updated:", res.data);
+            setEditID(-1);
+
+            const updatedData = data.map(user =>
+                user.id === editId ? { ...user, ...updatedUser } : user
+            );
+            setData(updatedData);
         })
-        .catch(er => {
-          console.error(er);
-          console.log('Ocorreu um erro ao tentar excluir o utilizador.');
+        .catch(err => {
+            console.error("Erro ao atualizar o utilizador:", err);
         });
+};
+
+const handleDelete = (id) => {
+    if (window.confirm('Você tem certeza que deseja excluir este utilizador?')) {
+        // Corrigido: Endpoint DELETE com id correto
+        axios.delete(`http://localhost:8081/users/${id}`)
+            .then(res => {
+                console.log('utilizador excluído com sucesso!');
+                const updatedData = data.filter(user => user.id !== id);
+                setData(updatedData);
+            })
+            .catch(er => {
+                console.error(er);
+                console.log('Ocorreu um erro ao tentar excluir o utilizador.');
+            });
     }
   };
  
