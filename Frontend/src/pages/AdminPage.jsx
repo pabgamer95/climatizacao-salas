@@ -1,4 +1,3 @@
-
 import React, {useState} from 'react';
 import axios from 'axios';
 import useUsers from '../Backend/users';
@@ -103,9 +102,12 @@ export default function AdminPage() {
       <div style={{ padding: "50px" }}>
         <table className="tabela1">
           <thead>
+            <tr>
               <th>Name</th>
               <th>Email</th>
               <th>Role</th>
+              <th>Changes</th>
+            </tr>
           </thead>
           <tbody>
             {
@@ -126,7 +128,7 @@ export default function AdminPage() {
                       onChange={e => usetmail(e.target.value)}  // Atualiza o estado ao digitar
                     />
                   </th>
-                  <th>
+                  <td>
                     <select 
                       value={role || ''}  // Garante que o campo tem um valor inicial
                       onChange={e => setRole(e.target.value)}  // Atualiza o estado ao mudar a opção
@@ -134,20 +136,21 @@ export default function AdminPage() {
                     <option value="client">Cliente</option>
                     <option value="technician">Técnico</option>
                     <option value="admin">Admin</option>
-                </select></th>
-                  <th><button onClick={handleUpdate}>Update</button></th>
+                </select>
+                </td>
+                  <td><button className='btnEditar' onClick={handleUpdate}>Update</button></td>
                 </tr>
                 :
                 <tr key={i}>
-                  <th>{d.nome}</th>
-                  <th>{d.email}</th>
-                  <th>{d.role}</th>
-                  <th>
+                  <td>{d.nome}</td>
+                  <td>{d.email}</td>
+                  <td>{d.role}</td>
+                  <td>
                     <button onClick={() => handleEdit(d.id)}>Edit</button>
                     <br />
 
                     <button onClick={() => handleDelete(d.id)}>Delete</button>
-                  </th>
+                  </td>
                 </tr> 
               ))
             }
