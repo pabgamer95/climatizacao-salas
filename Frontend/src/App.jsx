@@ -5,6 +5,7 @@ import AdminPage from './pages/AdminPage';
 import ClientPage from './pages/ClientPage';
 import TechnicianPage from './pages/TechnicianPage';
 import Register from './pages/Register';
+import SensorsPage from './pages/SensorsPage';
 import PrivateRoute from './components/PrivateRoute';
 
 function App() {
@@ -53,6 +54,13 @@ function App() {
                 <Register />
               //</PrivateRoute>
             }
+          />
+
+          {/* Rota para a nova página de Sensores */}
+          <Route path="/sensors" 
+          element={
+            <SensorsPage />
+            } 
           />
           
 

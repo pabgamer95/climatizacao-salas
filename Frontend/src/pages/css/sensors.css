@@ -1,4 +1,4 @@
-ody {
+body {
     background-color: #F6FCDF ;
     font-family: Arial, sans-serif;
     margin: 0;
@@ -17,7 +17,8 @@ ody {
     font-size: 20px; 
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   }
-
+  
+  
   .nomeApp {
     margin-left: 5%;
     font-size: 1.4em;
@@ -37,4 +38,35 @@ ody {
   .hiperLinks:hover {
   color: grey;
   text-decoration: underline;
+  }
+
+  .txt1 {
+    text-align: center;
+    font-size: 2.5em;
+    color: #333;
+    margin-top: 90px;
+  }
+
+  .tabela1 {
+    width: 90%;
+    margin: 40px auto;
+    border-collapse: collapse;
+    font-size: 1.3em;
+    color: black;
+    margin-top: 20px;
+    background-color: #FFF;
+    border-collapse: collapse;
+    overflow: hidden;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  
+  .tabela1 th, .tabela1 td {
+    padding: 15px;
+    border: 2px solid black;  
+    font-weight: bold;
+  }
+  
+  .tabela1 tbody tr:hover {
+    background-color: #f1f1f1;
   }

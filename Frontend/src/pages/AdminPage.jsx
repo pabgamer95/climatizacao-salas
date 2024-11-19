@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import axios from 'axios';
 import useUsers from '../Backend/users';
 import  './css/admin.css';
-import './imagens/logoteste.webp';
+import logoteste from './imagens/logoteste.webp';
 
 export default function AdminPage() {
  const {data, loading, error, setData } = useUsers([]);
@@ -83,10 +83,11 @@ const handleDelete = (id) => {
       <header>
         
         <nav className="navBar">
-            <img className="logo" src="logoteste.webp" alt="" /> 
+        
             <h1 className="nomeApp">AMBIENTRACK</h1>
             <a href="#" className="hiperLinks">UTILIZADORES</a>
-            <a href="#" className='hiperLinks'>DISPOSITIVOS</a>
+            <a href="#" className='hiperLinks'>SENSORES</a>
+            <a href="#" className='hiperLinks'>ALERTAS</a>
 
         </nav>
       </header>
