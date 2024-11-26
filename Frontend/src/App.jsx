@@ -48,7 +48,7 @@ function App() {
           />
 
           <Route
-            path="/register"
+            path="admin/register"
             element={
              // <PrivateRoute role="technician">
                 <Register />

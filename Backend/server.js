@@ -36,12 +36,12 @@ app.get('/users/:id', (req, res) => {
  
 
 app.post('/users', (req, res) => {
-    const sql = "INSERT INTO users (nome, email, password, role) VALUES (?, ?, ?, ?)";
+    const sql = "INSERT INTO users (nome, email, password, role_id) VALUES (?, ?, ?, ?)";
     const values = [
         req.body.nome, 
         req.body.email, 
         req.body.password, 
-        req.body.role
+        req.body.role_id
     ];
 
     db.query(sql, values, (err, result) => {
@@ -90,6 +90,16 @@ app.get('/sensors', (req, res) => {
     db.query(sql, (err, data) => {
         if (err) return res.json({ error: "Erro ao consultar a tabela sensors.", details: err });
         return res.json(data);
+    });
+});
+
+app.get('/sensors/:id', (req, res) => {
+    const sql = "SELECT * FROM sensors WHERE `id` = ?";
+    const sensorId = req.params.id;
+
+    db.query(sql, [sensorId], (err, data) => {
+        if (err) return res.json(err);
+        return res.json(data[0]); // Assuming `data` returns an array, `data[0]` will be the single user object
     });
 });
 
