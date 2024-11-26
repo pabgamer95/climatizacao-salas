@@ -1,106 +1,128 @@
+/* Geral */
 body {
-  background-color: #F6FCDF ;
-  font-family: Arial, sans-serif;
+  background-color: #F6FCDF;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
+  color: #333;
 }
 
+/* Barra de Navegação */
 .navBar {
   display: flex;
-  align-items: center;  
-  position: fixed;              
-  top: 0;                       
-  left: 0;                      
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   background-color: #4C7845;
-  color: white;    
-  padding: 20px;
-  font-size: 20px; 
+  color: white;
+  padding: 15px 30px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-
 .nomeApp {
-  margin-left: 5%;
-  font-size: 1.4em;
+  font-size: 1.6em;
   font-weight: bold;
-  margin-right: 100px;
 }
 
 .hiperLinks {
-  margin-left: auto;
-  margin-right: auto;
   text-decoration: none;
-  color: #FFF;
+  color: white;
   font-size: 1em;
-  transition: color 0.2s;
+  margin-left: 15px;
+  transition: color 0.3s;
 }
 
 .hiperLinks:hover {
-color: grey;
-text-decoration: underline;
+  color: #ddd;
 }
 
+/* Título principal */
 .txt1 {
   text-align: center;
   font-size: 2.5em;
+  font-weight: 600;
   color: #333;
-  margin-top: 90px;
+  margin-top: 80px;
 }
 
+/* Tabela */
 .tabela1 {
   width: 90%;
-  margin: 40px auto;
+  margin: 60px auto;
   border-collapse: collapse;
-  font-size: 1.3em;
-  color: black;
-  margin-top: 20px;
-  background-color: #FFF;
-  border-collapse: collapse;
-  overflow: hidden;
-  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  font-size: 1em;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-
 .tabela1 th, .tabela1 td {
-  padding: 15px;
-  border: 2px solid black;  
-  font-weight: bold;
+  padding: 12px 20px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.tabela1 th {
+  background-color: #4C7845;
+  color: white;
+  font-size: 1.1em;
 }
 
 .tabela1 tbody tr:hover {
-  background-color: #f1f1f1;
+  background-color: #f9f9f9;
 }
 
+/* Botões de Ação */
 .btnAcao {
   display: flex;
+  justify-content: center;
 }
 
 .btnEliminar, .btnEditar {
-  padding: 8px 12px;
+  padding: 10px 15px;
   border: none;
-  border-radius: 5px;
-  color: #FFF;
-  font-weight: bold;
+  border-radius: 30px;
+  color: white;
+  font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  margin: 0 8px;
 }
 
 .btnEditar {
-  background-color: #4CAF50
+  background-color: #4CAF50;
 }
 
 .btnEditar:hover {
   background-color: #45A049;
+  transform: scale(1.05);
 }
 
 .btnEliminar {
   background-color: #E74C3C;
-  margin-left: 10px;
 }
 
 .btnEliminar:hover {
   background-color: #C0392B;
+  transform: scale(1.05);
 }
 
+/* Inputs e Select */
+input[type="text"], select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1em;
+  transition: border-color 0.3s;
+  color: #333;  /* Texto preto */
+  background-color: #fff;  /* Fundo branco */
+}
 
-
-
+input[type="text"]:focus, select:focus {
+  border-color: #4C7845;
+  outline: none;
+}

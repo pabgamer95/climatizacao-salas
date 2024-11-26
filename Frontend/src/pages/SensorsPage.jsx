@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './css/sensors.css';
+import './css/admin.css';
 
 const SensorsPage = () => {
   const [sensors, setSensors] = useState([]);
+  const [editId, setEditId] = useState(null);
+  const [sensorName, setSensorName] = useState('');
+  const [sensorLocation, setSensorLocation] = useState('');
+  const [sensorStatus, setSensorStatus] = useState('');
   const [error, setError] = useState(null);
 
+  // Função para buscar sensores da API
   useEffect(() => {
     const fetchSensors = async () => {
       try {
@@ -19,6 +24,53 @@ const SensorsPage = () => {
 
     fetchSensors();
   }, []);
+
+  // Função para editar um sensor
+  const handleEdit = (sensor) => {
+    setEditId(sensor.id);
+    setSensorName(sensor.nome);
+    setSensorLocation(sensor.localizacao);
+    setSensorStatus(sensor.estado);
+  };
+
+  // Função para atualizar o sensor
+  const handleUpdate = async () => {
+    if (!sensorName || !sensorLocation || !sensorStatus) {
+      alert("Todos os campos são obrigatórios para a atualização.");
+      return;
+    }
+
+    const updatedSensor = {
+      nome: sensorName,
+      localizacao: sensorLocation,
+      estado: sensorStatus,
+    };
+
+    try {
+      await axios.put(`http://localhost:8081/sensors/${editId}`, updatedSensor);
+      // Atualizar a lista de sensores no estado
+      const updatedSensors = sensors.map(sensor =>
+        sensor.id === editId ? { ...sensor, ...updatedSensor } : sensor
+      );
+      setSensors(updatedSensors);
+      setEditId(null); // Limpa o estado de edição após a atualização
+    } catch (err) {
+      console.error("Erro ao atualizar o sensor:", err);
+    }
+  };
+
+  // Função para excluir um sensor
+  const handleDelete = async (id) => {
+    if (window.confirm('Você tem certeza que deseja excluir este sensor?')) {
+      try {
+        await axios.delete(`http://localhost:8081/sensors/${id}`);
+        const updatedSensors = sensors.filter(sensor => sensor.id !== id);
+        setSensors(updatedSensors);
+      } catch (err) {
+        console.error("Erro ao excluir o sensor:", err);
+      }
+    }
+  };
 
   return (
     <div>
@@ -35,33 +87,69 @@ const SensorsPage = () => {
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      {/* Tabela para exibir os sensores */}
-      <table className="tabela1">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Localização</th> {/* Exemplo de coluna adicional */}
-            <th>Status</th> {/* Exemplo de coluna adicional */}
-          </tr>
-        </thead>
-        <tbody>
-          {sensors.length > 0 ? (
-            sensors.map((sensor) => (
-              <tr key={sensor.id}>
-                <th>{sensor.id}</th>
-                <th>{sensor.nome}</th>
-                <th>{sensor.localizacao}</th> {/* Aqui você pode adaptar com os dados reais que sua API retorna */}
-                <th>{sensor.estado}</th> {/* Aqui você pode adaptar com os dados reais que sua API retorna */}
-              </tr>
-            ))
-          ) : (
+      <div style={{ padding: "50px" }}>
+        <table className="tabela1">
+          <thead>
             <tr>
-              <td colSpan="4">Carregando sensores...</td>
+              <th>Nome</th>
+              <th>Localização</th>
+              <th>Status</th>
+              <th>Ações</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {sensors.length > 0 ? (
+              sensors.map((sensor) => (
+                <tr key={sensor.id}>
+                  {editId === sensor.id ? (
+                    <>
+                      <td>
+                        <input
+                          type="text"
+                          value={sensorName}
+                          onChange={e => setSensorName(e.target.value)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          value={sensorLocation}
+                          onChange={e => setSensorLocation(e.target.value)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          value={sensorStatus}
+                          onChange={e => setSensorStatus(e.target.value)}
+                        />
+                      </td>
+                      <td>
+                        <button className="btnEditar" onClick={handleUpdate}>Atualizar</button>
+                        <button className="btnEliminar" onClick={() => handleDelete(sensor.id)}>Excluir</button>
+                      </td>
+                    </>
+                  ) : (
+                    <>
+                      <td>{sensor.nome}</td>
+                      <td>{sensor.localizacao}</td>
+                      <td>{sensor.estado}</td>
+                      <td className="btnAcao">
+                        <button className="btnEditar" onClick={() => handleEdit(sensor)}>Editar</button>
+                        <button className="btnEliminar" onClick={() => handleDelete(sensor.id)}>Excluir</button>
+                      </td>
+                    </>
+                  )}
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4">A carregar sensores...</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

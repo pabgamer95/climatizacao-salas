@@ -1,72 +1,106 @@
 body {
-    background-color: #F6FCDF ;
-    font-family: Arial, sans-serif;
-    margin: 0;
-  }
-  
-  .navBar {
-    display: flex;
-    align-items: center;  
-    position: fixed;              
-    top: 0;                       
-    left: 0;                      
-    width: 100%;
-    background-color: #4C7845;
-    color: white;    
-    padding: 20px;
-    font-size: 20px; 
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  
-  .nomeApp {
-    margin-left: 5%;
-    font-size: 1.4em;
-    font-weight: bold;
-    margin-right: 100px;
-  }
-  
-  .hiperLinks {
-    margin-left: auto;
-    margin-right: auto;
-    text-decoration: none;
-    color: #FFF;
-    font-size: 1em;
-    transition: color 0.2s;
-  }
-  
-  .hiperLinks:hover {
-  color: grey;
-  text-decoration: underline;
-  }
+  background-color: #F6FCDF ;
+  font-family: Arial, sans-serif;
+  margin: 0;
+}
 
-  .txt1 {
-    text-align: center;
-    font-size: 2.5em;
-    color: #333;
-    margin-top: 90px;
-  }
+.navBar {
+  display: flex;
+  align-items: center;  
+  position: fixed;              
+  top: 0;                       
+  left: 0;                      
+  width: 100%;
+  background-color: #4C7845;
+  color: white;    
+  padding: 20px;
+  font-size: 20px; 
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
 
-  .tabela1 {
-    width: 90%;
-    margin: 40px auto;
-    border-collapse: collapse;
-    font-size: 1.3em;
-    color: black;
-    margin-top: 20px;
-    background-color: #FFF;
-    border-collapse: collapse;
-    overflow: hidden;
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-  }
-  
-  
-  .tabela1 th, .tabela1 td {
-    padding: 15px;
-    border: 2px solid black;  
-    font-weight: bold;
-  }
-  
-  .tabela1 tbody tr:hover {
-    background-color: #f1f1f1;
-  }
+
+.nomeApp {
+  margin-left: 5%;
+  font-size: 1.4em;
+  font-weight: bold;
+  margin-right: 100px;
+}
+
+.hiperLinks {
+  margin-left: auto;
+  margin-right: auto;
+  text-decoration: none;
+  color: #FFF;
+  font-size: 1em;
+  transition: color 0.2s;
+}
+
+.hiperLinks:hover {
+color: grey;
+text-decoration: underline;
+}
+
+.txt1 {
+  text-align: center;
+  font-size: 2.5em;
+  color: #333;
+  margin-top: 90px;
+}
+
+.tabela1 {
+  width: 90%;
+  margin: 40px auto;
+  border-collapse: collapse;
+  font-size: 1.3em;
+  color: black;
+  margin-top: 20px;
+  background-color: #FFF;
+  border-collapse: collapse;
+  overflow: hidden;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+
+.tabela1 th, .tabela1 td {
+  padding: 15px;
+  border: 2px solid black;  
+  font-weight: bold;
+}
+
+.tabela1 tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+.btnAcao {
+  display: flex;
+}
+
+.btnEliminar, .btnEditar {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  color: #FFF;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btnEditar {
+  background-color: #4CAF50
+}
+
+.btnEditar:hover {
+  background-color: #45A049;
+}
+
+.btnEliminar {
+  background-color: #E74C3C;
+  margin-left: 10px;
+}
+
+.btnEliminar:hover {
+  background-color: #C0392B;
+}
+
+
+
+
