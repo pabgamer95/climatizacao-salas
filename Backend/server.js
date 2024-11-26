@@ -18,14 +18,14 @@ app.get('/', (req, res) => {
 })
 
 app.get('/users', (req, res) => {
-    const sql = "SELECT * FROM users";
+    const sql = `SELECT users.*, roles.RoleName AS role_name FROM users LEFT JOIN roles ON users.role_id = roles.RoleID`;
     db.query(sql, (err, data) => {
-        if (err) return res.json({ error: "Erro ao consultar a tabela users.", details: err });
-        return res.json(data);
-    }) 
-})
+        if (err) return res.json({ error: "Erro ao consultar os utilizadores.", details: err });
+        return res.json(data); // Retorna todos os utilizadores com a Role
+    });
+});
 app.get('/users/:id', (req, res) => {
-    const sql = "SELECT * FROM users WHERE `id` = ?";
+    const sql = "SELECT users.*, roles.RoleName AS role_name FROM users LEFT JOIN roles ON users.role_id = roles.RoleID WHERE `id` = ?";
     const userId = req.params.id;
 
     db.query(sql, [userId], (err, data) => {
@@ -54,12 +54,12 @@ app.put('/users/:id', (req, res) => {
     console.log("Updating user with ID:", req.params.id); // Debug
     console.log("Data received for update:", req.body); // Debug
 
-    const sql = "UPDATE users SET `nome` = ?, `email` = ?, `role` = ? WHERE `id` = ?";
+    const sql = "UPDATE users SET `nome` = ?, `email` = ?, `role_id` = ? WHERE `id` = ?";
     
     const values = [
         req.body.nome,
         req.body.email,
-        req.body.role
+        req.body.role_id
     ];
 
     db.query(sql, [...values, req.params.id], (err, result) => {

@@ -8,7 +8,7 @@ const Register = () => {
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState('client'); // Default role
+    const [role, setRole] = useState('cliente'); // Default role
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -69,9 +69,9 @@ const Register = () => {
                     }}
                     style={styles.input}
                 >
-                    <option value="client">Cliente</option>
-                    <option value="technician">Técnico</option>
-                    <option value="admin">Admin</option>
+                    <option value="3">Client</option>
+                    <option value="2">Technician</option>
+                    <option value="1">Admin</option>
                 </select>
 
                 <input type="submit" value="Criar Utilizador" style={styles.button} />

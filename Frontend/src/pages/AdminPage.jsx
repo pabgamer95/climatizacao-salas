@@ -7,8 +7,8 @@ import './imagens/logoteste.webp';
 export default function AdminPage() {
  const {data, loading, error, setData } = useUsers([]);
  const [editId, setEditID] = useState(-1);
- const [nome, setNome] = useState()
- const [email ,setEmail] = useState()
+/*  const [nome, setNome] = useState()
+ const [email ,setEmail] = useState() */
  const [unome, usetnome] = useState()
  const [uemail ,usetmail] = useState()
  const [role , setRole] = useState()
@@ -25,7 +25,7 @@ export default function AdminPage() {
       console.log(res.data)
       usetnome(res.data.nome); // Atualiza o estado com o nome do usuário
       usetmail(res.data.email); // Atualiza o estado com o email do usuário
-      setRole(res.data.role);   // Atualiza o estado com o role do usuário
+      setRole(res.data.role_id);   // Atualiza o estado com o role do usuário
       
     })
     .catch(er => console.log(er));
@@ -42,18 +42,22 @@ export default function AdminPage() {
     const updatedUser = {
         nome: unome,
         email: uemail,
-        role: role
+        role_id: role
     };
 
     axios.put(`http://localhost:8081/users/${editId}`, updatedUser)
+        .then(() => {
+            // Após atualizar, buscar os dados atualizados do utilizador
+            return axios.get(`http://localhost:8081/users/${editId}`);
+        })
         .then(res => {
-            console.log("User updated:", res.data);
-            setEditID(-1);
-
+            const updatedUserFromBackend = res.data; // Dados atualizados
+            // Atualiza os dados na lista do frontend
             const updatedData = data.map(user =>
-                user.id === editId ? { ...user, ...updatedUser } : user
+                user.id === editId ? updatedUserFromBackend : user
             );
-            setData(updatedData);
+            setData(updatedData); // Atualiza o estado
+            setEditID(-1); // Sai do modo de edição
         })
         .catch(err => {
             console.error("Erro ao atualizar o utilizador:", err);
@@ -128,9 +132,9 @@ const handleDelete = (id) => {
                       value={role || ''}  // Garante que o campo tem um valor inicial
                       onChange={e => setRole(e.target.value)}  // Atualiza o estado ao mudar a opção
                     >
-                    <option value="client">Cliente</option>
-                    <option value="technician">Técnico</option>
-                    <option value="admin">Admin</option>
+                    <option value="3">Client</option>
+                    <option value="2">Technician</option>
+                    <option value="1">Admin</option>
                 </select>
                 </td>
                   <td><button className='btnEditar' onClick={handleUpdate}>Update</button></td>
@@ -139,7 +143,7 @@ const handleDelete = (id) => {
                 <tr key={i}>
                   <td>{d.nome}</td>
                   <td>{d.email}</td>
-                  <td>{d.role}</td>
+                  <td>{d.role_name}</td>
                   <td className='btnAcao'>
                     <button className="btnEditar" onClick={() => handleEdit(d.id)}>Edit</button>
                     <br />
