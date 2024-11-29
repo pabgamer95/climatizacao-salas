@@ -3,34 +3,42 @@ import { useNavigate } from 'react-router-dom';
 import useUsers from '../Backend/users';
 import axios from 'axios';
 
-
 const Register = () => {
     const {data} = useUsers();
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState('3'); //Default Role
+    const [role, setRole] = useState('3'); // Default Role
 
     const navigate = useNavigate();
-    const handleSubmit = (e) => {
-        e.preventDefault()
 
-        const id = data.length + 1
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        const id = data.length + 1;
         axios
             .post('http://localhost:8081/users', { id: id, nome: nome, email: email, password: password, role_id: role })
             .then(() => {
-                console.log('Usuário registrado com sucesso!')
-                navigate('/admin'); // Redireciona para a página "admin"
+                console.log('Usuário registrado com sucesso!');
+                navigate('/admin'); 
             })
             .catch((error) => {
                 console.error('Erro ao registrar o usuário:', error);
                 console.log('Erro no registro.');
-        });
+            });
+    };
 
+    const handleGoBack = () => {
+        navigate('/admin'); 
     };
 
     return (
         <div style={styles.container}>
+            
+            <button onClick={handleGoBack} style={styles.backButton}>
+                Voltar
+            </button>
+
             <form onSubmit={handleSubmit} style={styles.form}>
                 <h2>Registro</h2>
 
@@ -70,7 +78,7 @@ const Register = () => {
                     value={role}
                     onChange={(e) => {
                         setRole(e.target.value);
-                        console.log("Role selecionado:", e.target.value); // Verifique o valor selecionado
+                        console.log("Role selecionado:", e.target.value); 
                     }}
                     style={styles.input}
                 >
@@ -79,7 +87,6 @@ const Register = () => {
                     <option value="1">Admin</option>
                 </select>
                 
-                
                 <input type="submit" value="Criar Utilizador" style={styles.button} />
             </form>
         </div>
@@ -87,12 +94,14 @@ const Register = () => {
 };
 
 const styles = {
-     container: {
+    container: {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         height: '100vh',
         backgroundColor: '#f4f4f4',
+        flexDirection: 'column', 
+        position: 'relative',  
     },
     form: {
         background: 'white',
@@ -117,7 +126,17 @@ const styles = {
         cursor: 'pointer',
         width: '100%',
     },
+    backButton: {
+        position: 'fixed', 
+        top: '20px',
+        left: '20px',
+        backgroundColor: '#5cb85c',
+        color: 'white',
+        border: 'none',
+        padding: '10px',
+        borderRadius: '5px',
+        cursor: 'pointer',
+    }
 };
-
 
 export default Register;

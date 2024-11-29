@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom'; 
 import './css/admin.css';
 
 const SensorsPage = () => {
@@ -75,11 +76,17 @@ const SensorsPage = () => {
   return (
     <div>
       <header>
-        <nav className="navBar">
+      <nav className="navBar">
           <h1 className="nomeApp">AMBIENTRACK</h1>
-          <a href="#" className="hiperLinks">UTILIZADORES</a>
-          <a href="#" className="hiperLinks">SENSORES</a>
-          <a href="#" className="hiperLinks">ALERTAS</a>
+          <Link to="/admin" className="hiperLinks">
+          UTILIZADORES
+          </Link>
+          <Link to="/sensors" className="hiperLinks">
+            SENSORES
+          </Link>
+          <a href="#" className="hiperLinks">
+            ALERTAS
+          </a>
         </nav>
       </header>
 
@@ -87,7 +94,7 @@ const SensorsPage = () => {
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      <div style={{ padding: "50px" }}>
+      <div>
         <table className="tabela1">
           <thead>
             <tr>
