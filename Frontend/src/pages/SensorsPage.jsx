@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom'; 
-import './css/admin.css';
+import { Link, useNavigate } from 'react-router-dom'; // Adicionei o useNavigate para redirecionamento
+import './css/sensors.css';
+import Cookies from 'js-cookie'; // Importando o Cookies
 
 const SensorsPage = () => {
   const [sensors, setSensors] = useState([]);
@@ -10,6 +11,8 @@ const SensorsPage = () => {
   const [sensorLocation, setSensorLocation] = useState('');
   const [sensorStatus, setSensorStatus] = useState('');
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate(); // Inicializa o useNavigate
 
   // Função para buscar sensores da API
   useEffect(() => {
@@ -87,6 +90,15 @@ const SensorsPage = () => {
     }
   };
 
+  // Função para fazer o logout
+  const handleLogout = () => {
+    // Remover o cookie "loggedInUser"
+    Cookies.remove('loggedInUser', { path: '/' });
+
+    // Redirecionar para a página inicial
+    navigate('/'); // Redireciona para a página desejada ("/")
+  };
+
   return (
     <div>
       <header>
@@ -95,6 +107,7 @@ const SensorsPage = () => {
           <Link to="/admin" className="hiperLinks">UTILIZADORES</Link>
           <Link to="/sensors" className="hiperLinks">SENSORES</Link>
           <a href="#" className="hiperLinks">ALERTAS</a>
+          <button className="btnLogout" onClick={handleLogout}>Sair</button>
         </nav>
       </header>
 
@@ -152,7 +165,7 @@ const SensorsPage = () => {
                       <td className="btnAcao">
                         <button className="btnEditar" onClick={() => handleEdit(sensor)}>Editar</button>
                         <button className="btnEliminar" onClick={() => handleDelete(sensor.id)}>Excluir</button>
-                        <button className='btnEditar'>Info</button>
+                        <button className='btnInfo'>Info</button>
                       </td>
                     </>
                   )}

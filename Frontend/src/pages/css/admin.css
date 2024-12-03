@@ -48,7 +48,7 @@ body {
 
 .tabela1 {
   padding: 50px;
-  width: 90%;
+  width: 80%;
   margin: 60px auto;
   border-collapse: collapse;
   font-size: 1.2em;
@@ -61,6 +61,7 @@ body {
   padding: 12px 20px;
   text-align: left;
   border-bottom: 1px solid #ddd;
+  text-align: center;
 }
 
 .tabela1 th {
@@ -140,5 +141,41 @@ input[type="text"]:focus, select:focus {
 
 .btnCriarUtilizador:hover {
   background-color: #45a049;
+}
+
+.btnInfo {
+  background-color: #1335b3
+}
+
+.btnInfo:hover {
+  background-color: #0e2884;
+  margin-left: 10px;
+}
+
+.btnLogout {
+  padding: 10px 20px;
+  background-color: #E74C3C;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btnLogout:hover {
+  background-color: #C0392B;
+}
+
+.btnLogout:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(231, 76, 60, 0.8);
+}
+
+.btnLogout:active {
+  background-color: #C0392B;
 }
 

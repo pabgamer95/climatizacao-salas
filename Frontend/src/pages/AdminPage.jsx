@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom'; // Use useNavigate aqui
 import axios from 'axios';
-import { Link } from 'react-router-dom'; // Importando o Link do React Router
 import useUsers from '../Backend/users';
-import './css/admin.css'; // Verifique se o caminho do arquivo está correto
-import logoteste from './imagens/logoteste.webp'; // Verifique a imagem também, se necessário
+import './css/admin.css';
+import logoteste from './imagens/logoteste.webp'; 
+import Cookies from 'js-cookie'; // Importando o Cookies
 
 export default function AdminPage() {
+  const navigate = useNavigate(); // Inicializa o useNavigate
   const { data, loading, error, setData } = useUsers([]);
   const [editId, setEditID] = useState(-1);
   const [unome, usetnome] = useState('');
@@ -15,11 +17,11 @@ export default function AdminPage() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error fetching data: {error.message}</p>;
 
+  // Função para editar um usuário
   const handleEdit = (id) => {
     axios
       .get('http://localhost:8081/users/' + id)
       .then((res) => {
-        console.log(res.data);
         usetnome(res.data.nome);
         usetmail(res.data.email);
         setRole(res.data.role_id);
@@ -28,9 +30,9 @@ export default function AdminPage() {
     setEditID(id);
   };
 
+  // Função para atualizar um usuário
   const handleUpdate = () => {
     if (!unome || !uemail || !role) {
-      console.error('Erro: Campos obrigatórios estão vazios');
       alert('Todos os campos são obrigatórios para a atualização.');
       return;
     }
@@ -59,20 +61,28 @@ export default function AdminPage() {
       });
   };
 
+  // Função para excluir um usuário
   const handleDelete = (id) => {
     if (window.confirm('Você tem certeza que deseja excluir este utilizador?')) {
       axios
         .delete(`http://localhost:8081/users/${id}`)
-        .then((res) => {
-          console.log('Utilizador excluído com sucesso!');
+        .then(() => {
           const updatedData = data.filter((user) => user.id !== id);
           setData(updatedData);
         })
         .catch((er) => {
-          console.error(er);
-          console.log('Ocorreu um erro ao tentar excluir o utilizador.');
+          console.error('Erro ao excluir o utilizador:', er);
         });
     }
+  };
+
+  // Função para fazer o logout
+  const handleLogout = () => {
+    // Remover o cookie "loggedInUser"
+    Cookies.remove('loggedInUser', { path: '/' });
+
+    // Redirecionar para a página inicial
+    navigate('/'); // Redireciona para a página desejada ("/")
   };
 
   return (
@@ -89,10 +99,11 @@ export default function AdminPage() {
           <a href="#" className="hiperLinks">
             ALERTAS
           </a>
+          <button className="btnLogout" onClick={handleLogout}>Sair</button>
         </nav>
       </header>
 
-      <h1 className="txt1">Admin Page</h1>
+      <h1 className="txt1">Lista de Utilizadores</h1>
 
       <div>
         <Link to="/admin/register">
