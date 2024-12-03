@@ -1,4 +1,5 @@
 import './css/tech.css';
+import { Link } from 'react-router-dom'; 
 
 
 export default function TechnicianPage() {
@@ -8,10 +9,13 @@ export default function TechnicianPage() {
         <header>
         
         <nav className="navBar">
-            <img className="logo" src="logoteste.webp" alt="" /> 
-            <h1 className="nomeApp">AMBIENTRACK</h1>
-            <a href="#" className='hiperLinks'>DISPOSITIVOS</a>
-            <a href="#" className="hiperLinks">ALERTAS</a>
+          <h1 className="nomeApp">AMBIENTRACK</h1>
+          <Link to="/sensors" className="hiperLinks">
+            SENSORES
+          </Link>
+          <a href="#" className="hiperLinks">
+            ALERTAS
+          </a>
         </nav>
       </header>
 
