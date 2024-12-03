@@ -26,11 +26,7 @@ export default function Login() {
       if (foundUser) {
         // Redirecionar com base na role do cookie
         if (role === 'admin') {
-          navigate("/admin");
-        } else if (role === 'client') {
-          navigate("/client");
-        } else if (role === 'technician') {
-          navigate("/technician");
+          navigate(`/${role}`);
         }
       }
     }
@@ -38,37 +34,34 @@ export default function Login() {
 
   if (loading) return <p>Loading...</p>;
 
-  /* const users = [
-    { email: "admin@example.com", role: "admin", password: "admin123" },
-    { email: "client@example.com", role: "client", password: "client123" },
-    { email: "technician@example.com", role: "technician", password: "tech123" },
-  ]; */
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
   
     try {
-      // Tentar fazer login com o email e a senha
-      const foundUser = users.find(u => u.email === email && u.password === password);
+      // Procura o usuário que corresponde ao email
+      const foundUser = users.find(u => u.email === email);
   
-      if (foundUser) {
-        login(email); // Chama o método de login do contexto
+      if (foundUser && foundUser.password === password) {
+        login(email);
   
-        // Armazena email e role no cookie
-        //Cookies.set('loggedInUser', JSON.stringify({ email: foundUser.email, role: foundUser.role }), { expires: 7 / 24 });
+        // Usa role_name do backend em vez de role
+        const userRole = foundUser.role_name.toLowerCase();
+        
+        // Configura o cookie com os dados do usuário
+        const cookieData = {
+          email: foundUser.email,
+          role: userRole
+        };
+        
+        // Define o cookie com o path correto
+        Cookies.set('loggedInUser', JSON.stringify(cookieData), {
+          expires: 7 / 24,
+          path: '/'  // Permite acesso ao cookie em todas as rotas
+        });
   
-        // Redirecionar com base na role do utilizador
-        if (foundUser.role === 'admin') {
-          Cookies.set('loggedInUser', JSON.stringify({ email: foundUser.email, role: foundUser.role }), { expires: 7 / 24, path: "/admin" });
-          navigate("/admin");
-        } else if (foundUser.role === 'client') {
-          Cookies.set('loggedInUser', JSON.stringify({ email: foundUser.email, role: foundUser.role }), { expires: 7 / 24, path: "/client" });
-          navigate("/client");
-        } else if (foundUser.role === 'technician') {
-          Cookies.set('loggedInUser', JSON.stringify({ email: foundUser.email, role: foundUser.role }), { expires: 7 / 24, path: "/technician" });
-          navigate("/technician");
-        }
+        // Redireciona baseado no role_name
+        navigate(`/${userRole}`);
       } else {
         throw new Error("Credenciais inválidas");
       }
