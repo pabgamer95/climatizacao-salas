@@ -36,7 +36,7 @@ const SensorsPage = () => {
 
   // Função para atualizar o sensor
   const handleUpdate = async () => {
-    if (!sensorName || !sensorLocation || !sensorStatus) {
+    if (!sensorName.trim() || !sensorLocation.trim() || !sensorStatus.trim()) {
       alert("Todos os campos são obrigatórios para a atualização.");
       return;
     }
@@ -48,8 +48,16 @@ const SensorsPage = () => {
     };
 
     try {
-      await axios.put(`http://localhost:8081/sensors/${editId}`, updatedSensor);
-      // Atualizar a lista de sensores no estado
+      console.log('Enviando dados para atualizar:', updatedSensor);
+
+      // Verificando a URL antes de enviar
+      const url = `http://localhost:8081/sensors/${editId}`;
+      console.log('URL de atualização:', url);
+
+      const response = await axios.put(url, updatedSensor);
+      console.log('Resposta da atualização:', response.data);
+
+      // Atualizando a lista de sensores
       const updatedSensors = sensors.map(sensor =>
         sensor.id === editId ? { ...sensor, ...updatedSensor } : sensor
       );
@@ -57,6 +65,7 @@ const SensorsPage = () => {
       setEditId(null); // Limpa o estado de edição após a atualização
     } catch (err) {
       console.error("Erro ao atualizar o sensor:", err);
+      alert("Erro ao atualizar o sensor. Verifique os logs para mais detalhes.");
     }
   };
 
@@ -64,11 +73,16 @@ const SensorsPage = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Você tem certeza que deseja excluir este sensor?')) {
       try {
-        await axios.delete(`http://localhost:8081/sensors/${id}`);
+        console.log('Enviando requisição DELETE para:', `http://localhost:8081/sensors/${id}`);
+
+        const response = await axios.delete(`http://localhost:8081/sensors/${id}`);
+        console.log('Resposta da exclusão:', response.data);
+
         const updatedSensors = sensors.filter(sensor => sensor.id !== id);
         setSensors(updatedSensors);
       } catch (err) {
         console.error("Erro ao excluir o sensor:", err);
+        alert("Erro ao excluir o sensor. Verifique os logs para mais detalhes.");
       }
     }
   };
@@ -76,17 +90,11 @@ const SensorsPage = () => {
   return (
     <div>
       <header>
-      <nav className="navBar">
+        <nav className="navBar">
           <h1 className="nomeApp">AMBIENTRACK</h1>
-          <Link to="/admin" className="hiperLinks">
-          UTILIZADORES
-          </Link>
-          <Link to="/sensors" className="hiperLinks">
-            SENSORES
-          </Link>
-          <a href="#" className="hiperLinks">
-            ALERTAS
-          </a>
+          <Link to="/admin" className="hiperLinks">UTILIZADORES</Link>
+          <Link to="/sensors" className="hiperLinks">SENSORES</Link>
+          <a href="#" className="hiperLinks">ALERTAS</a>
         </nav>
       </header>
 
@@ -144,6 +152,7 @@ const SensorsPage = () => {
                       <td className="btnAcao">
                         <button className="btnEditar" onClick={() => handleEdit(sensor)}>Editar</button>
                         <button className="btnEliminar" onClick={() => handleDelete(sensor.id)}>Excluir</button>
+                        <button className='btnEditar'>Info</button>
                       </td>
                     </>
                   )}
