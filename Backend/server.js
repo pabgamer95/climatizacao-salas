@@ -9,7 +9,7 @@ app.use(express.json())
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'Messi8',
+    password: 'ShadowKnight1305+',
     database: 'climatizacao_salas',
 })
 
@@ -94,7 +94,21 @@ app.get('/sensors', (req, res) => {
 });
 
 app.get('/sensors/:id', (req, res) => {
-    const sql = "SELECT * FROM sensors WHERE `id` = ?";
+    const sql = `SELECT sensors.*, 
+                 config_sensor.temperatura_max AS temp_max,
+                 config_sensor.temperatura_min AS temp_min, 
+                 config_sensor.humidade_max AS hum_max, 
+                 config_sensor.humidade_min AS hum_min, 
+                 read_sensors.temperatura_atual AS temp_atual, 
+                 read_sensors.humidade_atual AS hum_atual, 
+                 sensor_models.nome_modelo AS modelo_sensor, 
+                 sensor_models.fabricante AS fabricante_sensor 
+                 FROM sensors 
+                 LEFT JOIN config_sensor ON sensors.id_config = config_sensor.id_config 
+                 LEFT JOIN read_sensors ON sensors.id_read = read_sensors.id_read 
+                 LEFT JOIN sensor_models ON sensors.id_model = sensor_models.id_model 
+                 WHERE sensors.id = ?;`;
+
     const sensorId = req.params.id;
 
     db.query(sql, [sensorId], (err, data) => {
@@ -103,19 +117,26 @@ app.get('/sensors/:id', (req, res) => {
     });
 });
 
-app.get('/config_sensor', (req, res) => {
-    const sql = "SELECT * FROM config_sensor";
-    db.query(sql, (err, data) => {
-        if (err) return res.json({ error: "Erro ao consultar a tabela config_sensor.", details: err });
-        return res.json(data);
-    });
-});
+app.put('/sensors/:id', (req, res) => {
+    console.log("Atualizando sensor com ID:", req.params.id); // Debug
+    console.log("Dados recebidos para atualização:", req.body); // Debug
 
-app.get('/read_sensor', (req, res) => {
-    const sql = "SELECT * FROM read_sensors";
-    db.query(sql, (err, data) => {
-        if (err) return res.json({ error: "Erro ao consultar a tabela read_sensors.", details: err });
-        return res.json(data);
+    const sql = "UPDATE sensors SET `nome` = ?, `localizacao` = ?, `estado` = ? WHERE `id` = ?";
+    
+    const values = [
+        req.body.nome,
+        req.body.localizacao, 
+        req.body.estado
+    ];
+
+    db.query(sql, [...values, req.params.id], (err, result) => {
+        if (err) {
+            console.error("Erro ao atualizar sensor:", err); // Debugging error
+            return res.status(500).json({ error: "Erro ao atualizar sensor", details: err });
+        }
+
+        console.log("Sensor atualizado com sucesso:", result);
+        return res.status(200).json({ success: "Sensor atualizado com sucesso." });
     });
 });
 

@@ -57,7 +57,7 @@ function App() {
           />
 
           {/* Rota para a nova página de Sensores */}
-          <Route path="/sensors" 
+          <Route path="admin/sensors" 
           element={
             <SensorsPage />
             } 

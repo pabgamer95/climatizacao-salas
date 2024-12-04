@@ -11,6 +11,8 @@ const SensorsPage = () => {
   const [sensorLocation, setSensorLocation] = useState('');
   const [sensorStatus, setSensorStatus] = useState('');
   const [error, setError] = useState(null);
+  const [selectedSensor, setSelectedSensor] = useState(null);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   const navigate = useNavigate(); // Inicializa o useNavigate
 
@@ -29,16 +31,61 @@ const SensorsPage = () => {
     fetchSensors();
   }, []);
 
+  const handleInfo = async (sensorId) => {
+    try {
+      const response = await axios.get(`http://localhost:8081/sensors/${sensorId}`); // Faz a requisição para obter o sensor pelo ID
+      setSelectedSensor(response.data); // Define o sensor retornado como o sensor selecionado
+      setIsModalOpen(true);
+    } catch (err) {
+      console.error('Erro ao buscar informações do sensor:', err);
+      alert('Erro ao buscar informações do sensor.');
+    }
+  };
+
+  const closeModal = () => {
+    setSelectedSensor(null);
+    setIsModalOpen(false);
+  };
+
+  const SensorModal = ({ sensor, onClose }) => {
+    if (!sensor) return null;
+  
+    return (
+      <div className="modalOverlay">
+        <div className="modalContent">
+          <h2>Informações do Sensor</h2>
+          <p><strong>Modelo:</strong> {sensor.modelo_sensor}</p>
+          <p><strong>Fabricante:</strong> {sensor.fabricante_sensor}</p>
+          <p><strong>Localização:</strong> {sensor.localizacao}</p>
+          <p><strong>Status:</strong> {sensor.estado}</p>
+          <p><strong>Temperatura Máxima:</strong> {sensor.temp_max}ºC</p>
+          <p><strong>Temperatura Mínima:</strong> {sensor.temp_min}ºC</p>
+          <p><strong>Humidade Máxima:</strong> {sensor.hum_max}%</p>
+          <p><strong>Humidade Mínima:</strong> {sensor.hum_min}%</p>
+          <p><strong>Temperatura Atual:</strong> {sensor.temp_atual}ºC</p>
+          <p><strong>Humidade Atual:</strong> {sensor.hum_atual}%</p>
+          <button className="btnFechar" onClick={onClose}>Fechar</button>
+        </div>
+      </div>
+    );
+  };
+
+
   // Função para editar um sensor
-  const handleEdit = (sensor) => {
-    setEditId(sensor.id);
-    setSensorName(sensor.nome);
-    setSensorLocation(sensor.localizacao);
-    setSensorStatus(sensor.estado);
+  const handleEdit = (id) => {
+    axios
+      .get('http://localhost:8081/sensors/' + id)
+      .then((res) => {
+        setSensorName(res.data.nome);
+        setSensorLocation(res.data.localizacao);
+        setSensorStatus(res.data.estado);
+      })
+      .catch((er) => console.log(er));
+    setEditId(id);
   };
 
   // Função para atualizar o sensor
-  const handleUpdate = async () => {
+  const handleUpdate = () => {
     if (!sensorName.trim() || !sensorLocation.trim() || !sensorStatus.trim()) {
       alert("Todos os campos são obrigatórios para a atualização.");
       return;
@@ -50,26 +97,23 @@ const SensorsPage = () => {
       estado: sensorStatus,
     };
 
-    try {
-      console.log('Enviando dados para atualizar:', updatedSensor);
-
-      // Verificando a URL antes de enviar
-      const url = `http://localhost:8081/sensors/${editId}`;
-      console.log('URL de atualização:', url);
-
-      const response = await axios.put(url, updatedSensor);
-      console.log('Resposta da atualização:', response.data);
-
-      // Atualizando a lista de sensores
-      const updatedSensors = sensors.map(sensor =>
-        sensor.id === editId ? { ...sensor, ...updatedSensor } : sensor
-      );
-      setSensors(updatedSensors);
-      setEditId(null); // Limpa o estado de edição após a atualização
-    } catch (err) {
-      console.error("Erro ao atualizar o sensor:", err);
-      alert("Erro ao atualizar o sensor. Verifique os logs para mais detalhes.");
-    }
+    axios
+      .put(`http://localhost:8081/sensors/${editId}`, updatedSensor)
+      .then(() => {
+        return axios.get(`http://localhost:8081/sensors/${editId}`);
+      })
+      .then((res) => {
+        const updatedSensorFromBackend = res.data;
+        const updatedSensors = sensors.map((sensor) =>
+          sensor.id === editId ? updatedSensorFromBackend : sensor
+        );
+        setSensors(updatedSensors);
+        setEditId(-1);
+      })
+      .catch((err) => {
+        console.error("Erro ao atualizar o sensor:", err);
+        alert("Erro ao atualizar o sensor. Verifique os logs para mais detalhes.");
+      });
   };
 
   // Função para excluir um sensor
@@ -105,7 +149,7 @@ const SensorsPage = () => {
         <nav className="navBar">
           <h1 className="nomeApp">AMBIENTRACK</h1>
           <Link to="/admin" className="hiperLinks">UTILIZADORES</Link>
-          <Link to="/sensors" className="hiperLinks">SENSORES</Link>
+          <Link to="#" className="hiperLinks">SENSORES</Link>
           <a href="#" className="hiperLinks">ALERTAS</a>
           <button className="btnLogout" onClick={handleLogout}>Sair</button>
         </nav>
@@ -146,15 +190,17 @@ const SensorsPage = () => {
                         />
                       </td>
                       <td>
-                        <input
-                          type="text"
-                          value={sensorStatus}
-                          onChange={e => setSensorStatus(e.target.value)}
-                        />
+                        <select
+                          value={sensorStatus || ''}
+                          onChange={(e) => setSensorStatus(e.target.value)}
+                        >
+                          <option value="Danificado">Danificado</option>
+                          <option value="Ativo">Ativo</option>
+                          <option value="Inativo">Inativo</option>
+                        </select>
                       </td>
                       <td>
                         <button className="btnEditar" onClick={handleUpdate}>Atualizar</button>
-                        <button className="btnEliminar" onClick={() => handleDelete(sensor.id)}>Excluir</button>
                       </td>
                     </>
                   ) : (
@@ -163,9 +209,9 @@ const SensorsPage = () => {
                       <td>{sensor.localizacao}</td>
                       <td>{sensor.estado}</td>
                       <td className="btnAcao">
-                        <button className="btnEditar" onClick={() => handleEdit(sensor)}>Editar</button>
+                        <button className="btnEditar" onClick={() => handleEdit(sensor.id)}>Editar</button>
                         <button className="btnEliminar" onClick={() => handleDelete(sensor.id)}>Excluir</button>
-                        <button className='btnInfo'>Info</button>
+                        <button className='btnInfo' onClick={() => handleInfo(sensor.id)}>Info</button>
                       </td>
                     </>
                   )}
@@ -178,6 +224,11 @@ const SensorsPage = () => {
             )}
           </tbody>
         </table>
+
+        {isModalOpen && (
+          <SensorModal sensor={selectedSensor} onClose={closeModal} />
+        )}
+
       </div>
     </div>
   );

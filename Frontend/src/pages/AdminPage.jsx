@@ -93,7 +93,7 @@ export default function AdminPage() {
           <Link to="/admin" className="hiperLinks">
             UTILIZADORES
           </Link>
-          <Link to="/sensors" className="hiperLinks">
+          <Link to="/admin/sensors" className="hiperLinks">
             SENSORES
           </Link>
           <a href="#" className="hiperLinks">
