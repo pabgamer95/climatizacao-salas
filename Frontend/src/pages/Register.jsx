@@ -8,7 +8,7 @@ const Register = () => {
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState('3'); // Default Role
+    const [role, setRole] = useState('3'); 
 
     const navigate = useNavigate();
 
@@ -27,7 +27,7 @@ const Register = () => {
                 console.log('Erro no registro.');
             });
     };
-
+    
     const handleGoBack = () => {
         navigate('/admin'); 
     };

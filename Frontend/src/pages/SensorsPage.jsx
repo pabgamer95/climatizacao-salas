@@ -160,6 +160,12 @@ const SensorsPage = () => {
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
       <div>
+        <Link to="/CreateSensor">
+          <button className="btnCriarUtilizador">Criar Sensor</button>
+        </Link>
+      </div>
+
+      <div>
         <table className="tabela1">
           <thead>
             <tr>
