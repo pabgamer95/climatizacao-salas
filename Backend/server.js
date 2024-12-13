@@ -9,7 +9,7 @@ app.use(express.json())
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'Messi8',
+    password: 'ShadowKnight1305+',
     database: 'climatizacao_salas',
 })
 
@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/users', (req, res) => {
-    const sql = `SELECT * FROM users`;
+    const sql = `SELECT users.*, roles.RoleName AS role_name FROM users LEFT JOIN roles ON users.role_id = roles.RoleID`;
     db.query(sql, (err, data) => {
         if (err) return res.json({ error: "Erro ao consultar os utilizadores.", details: err });
         return res.json(data); // Retorna todos os utilizadores com a Role
