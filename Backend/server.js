@@ -18,12 +18,13 @@ app.get('/', (req, res) => {
 })
 
 app.get('/users', (req, res) => {
-    const sql = `SELECT users.*, roles.RoleName AS role_name FROM users LEFT JOIN roles ON users.role_id = roles.RoleID`;
+    const sql = `SELECT * FROM users`;
     db.query(sql, (err, data) => {
         if (err) return res.json({ error: "Erro ao consultar os utilizadores.", details: err });
         return res.json(data); // Retorna todos os utilizadores com a Role
     });
 });
+
 app.get('/users/:id', (req, res) => {
     const sql = "SELECT users.*, roles.RoleName AS role_name FROM users LEFT JOIN roles ON users.role_id = roles.RoleID WHERE `id` = ?";
     const userId = req.params.id;
@@ -33,7 +34,6 @@ app.get('/users/:id', (req, res) => {
         return res.json(data[0]); // Assuming `data` returns an array, `data[0]` will be the single user object
     });
 });
- 
 
 app.post('/users', (req, res) => {
     const sql = "INSERT INTO users (nome, email, password, role_id) VALUES (?, ?, ?, ?)";
@@ -43,6 +43,7 @@ app.post('/users', (req, res) => {
         req.body.password, 
         req.body.role_id
     ];
+    console.log(req.body)
 
     db.query(sql, values, (err, result) => {
         if (err) return res.json({message: 'Something unexpected has occured' + err})
@@ -139,6 +140,16 @@ app.put('/sensors/:id', (req, res) => {
         return res.status(200).json({ success: "Sensor atualizado com sucesso." });
     });
 });
+
+app.delete('/sensros/:id', (req, res) => {
+    const sql = "DELETE FROM sensors WHERE `id` = ?";
+
+    db.query(sql, [req.params.id], (err) => {
+        if (err) return res.json(err);
+
+        return res.status(200).json({ success: "Sensor deletado com sucesso." })
+    })
+})
 
 app.get('/warning', (req, res) => {
     const sql = "SELECT * FROM warning";

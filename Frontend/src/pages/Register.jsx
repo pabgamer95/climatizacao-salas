@@ -15,9 +15,8 @@ const Register = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const id = data.length + 1;
         axios
-            .post('http://localhost:8081/users', { id: id, nome: nome, email: email, password: password, role_id: role })
+            .post('http://localhost:8081/users', {nome: nome, email: email, password: password, role_id: role })
             .then(() => {
                 console.log('Usuário registrado com sucesso!');
                 navigate('/admin'); 
