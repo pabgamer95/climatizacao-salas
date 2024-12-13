@@ -6,6 +6,7 @@ import ClientPage from './pages/ClientPage';
 import TechnicianPage from './pages/TechnicianPage';
 import Register from './pages/Register';
 import SensorsPage from './pages/SensorsPage';
+import CreateSensor from './pages/CreateSensor';
 import PrivateRoute from './components/PrivateRoute';
 
 function App() {
@@ -62,6 +63,13 @@ function App() {
             <SensorsPage />
             } 
           />
+
+          {/* Rota para a nova página de Criar Sensores */}
+          <Route path="CreateSensor" 
+            element={
+            <CreateSensor />
+                      } 
+                    />
           
 
         </Routes>
