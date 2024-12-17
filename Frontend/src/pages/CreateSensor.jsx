@@ -5,10 +5,8 @@ import axios from 'axios';
 const CreateSensor = () => {
     const [nome, setNome] = useState('');
     const [localizacao, setLocalizacao] = useState('');
-    const [estado, setEstado] = useState('Inativo');
-    const [idRead, setIdRead] = useState('');
-    const [idConfig, setIdConfig] = useState('');
-    const [idModel, setIdModel] = useState('');
+    const [modelo, setModelo] = useState('');
+    const [fabricante, setFabricante] = useState('');
     
     const navigate = useNavigate();
 
@@ -19,13 +17,10 @@ const CreateSensor = () => {
 
         axios
             .post('http://localhost:8081/sensors', {
-                id: id,
                 nome: nome,
                 localizacao: localizacao,
-                estado: estado,
-                id_read: idRead,
-                id_config: idConfig,
-                id_model: idModel
+                nome_modelo: modelo,
+                fabricante: fabricante
             })
             .then(() => {
                 console.log('Sensor registrado com sucesso!');
@@ -71,44 +66,22 @@ const CreateSensor = () => {
                     style={styles.input}
                 />
 
-                <label htmlFor="estado">Estado:</label>
-                <select
-                    id="estado"
-                    value={estado}
-                    onChange={(e) => setEstado(e.target.value)}
-                    style={styles.input}
-                >
-                    <option value="Ativo">Ativo</option>
-                    <option value="Inativo">Inativo</option>
-                    <option value="Danificado">Danificado</option>
-                </select>
-
-                <label htmlFor="idRead">ID do Leitura:</label>
+                <label htmlFor="modelo">Modelo:</label>
                 <input
-                    type="number"
-                    id="idRead"
-                    value={idRead}
-                    onChange={(e) => setIdRead(e.target.value)}
+                    type="text"
+                    id="modelo"
+                    value={modelo}
+                    onChange={(e) => setModelo(e.target.value)}
                     required
                     style={styles.input}
                 />
 
-                <label htmlFor="idConfig">ID da Configuração:</label>
+                <label htmlFor="fabricante">Fabricante:</label>
                 <input
-                    type="number"
-                    id="idConfig"
-                    value={idConfig}
-                    onChange={(e) => setIdConfig(e.target.value)}
-                    required
-                    style={styles.input}
-                />
-
-                <label htmlFor="idModel">ID do Modelo:</label>
-                <input
-                    type="number"
-                    id="idModel"
-                    value={idModel}
-                    onChange={(e) => setIdModel(e.target.value)}
+                    type="text"
+                    id="fabricante"
+                    value={fabricante}
+                    onChange={(e) => setFabricante(e.target.value)}
                     required
                     style={styles.input}
                 />

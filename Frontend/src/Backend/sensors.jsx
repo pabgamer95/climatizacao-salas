@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const useUsers = () => {
+const useSensors = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -9,7 +9,7 @@ const useUsers = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await fetch('http://localhost:8081/users');
+        const response = await fetch('http://localhost:8081/sensors');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -28,4 +28,4 @@ const useUsers = () => {
   return { data, loading, error, setData };
 };
 
-export default useUsers;
+export default useSensors;

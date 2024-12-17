@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import axios from 'axios';
+import useSensors from '../Backend/sensors';
 import { Link, useNavigate } from 'react-router-dom'; // Adicionei o useNavigate para redirecionamento
 import './css/sensors.css';
 import Cookies from 'js-cookie'; // Importando o Cookies
 
 const SensorsPage = () => {
+  const { data, setData } = useSensors([]);
   const [sensors, setSensors] = useState([]);
-  const [editId, setEditId] = useState(null);
+  const [editId, setEditId] = useState(-1);
   const [sensorName, setSensorName] = useState('');
   const [sensorLocation, setSensorLocation] = useState('');
   const [sensorStatus, setSensorStatus] = useState('');
@@ -14,22 +16,9 @@ const SensorsPage = () => {
   const [selectedSensor, setSelectedSensor] = useState(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
+  
   const navigate = useNavigate(); // Inicializa o useNavigate
 
-  // Função para buscar sensores da API
-  useEffect(() => {
-    const fetchSensors = async () => {
-      try {
-        const response = await axios.get('http://localhost:8081/sensors');
-        setSensors(response.data);
-      } catch (err) {
-        setError('Erro ao carregar sensores.');
-        console.error('Erro ao buscar sensores:', err);
-      }
-    };
-
-    fetchSensors();
-  }, []);
 
   const handleInfo = async (sensorId) => {
     try {
@@ -104,7 +93,7 @@ const SensorsPage = () => {
       })
       .then((res) => {
         const updatedSensorFromBackend = res.data;
-        const updatedSensors = sensors.map((sensor) =>
+        const updatedSensors = data.map((sensor) =>
           sensor.id === editId ? updatedSensorFromBackend : sensor
         );
         setSensors(updatedSensors);
@@ -117,20 +106,17 @@ const SensorsPage = () => {
   };
 
   // Função para excluir um sensor
-  const handleDelete = async (id) => {
+  const handleDelete = (id) => {
     if (window.confirm('Você tem certeza que deseja excluir este sensor?')) {
-      try {
-        console.log('Enviando requisição DELETE para:', `http://localhost:8081/sensors/${id}`);
-
-        const response = await axios.delete(`http://localhost:8081/sensors/${id}`);
-        console.log('Resposta da exclusão:', response.data);
-
-        const updatedSensors = sensors.filter(sensor => sensor.id !== id);
-        setSensors(updatedSensors);
-      } catch (err) {
-        console.error("Erro ao excluir o sensor:", err);
-        alert("Erro ao excluir o sensor. Verifique os logs para mais detalhes.");
-      }
+      axios
+        .delete(`http://localhost:8081/sensors/${id}`)
+        .then(() => {
+          const updatedData = data.filter((sensor) => sensor.id !== id);
+          setData(updatedData);
+        })
+        .catch((er) => {
+          console.error('Erro ao excluir o utilizador:', er);
+        });
     }
   };
 
@@ -176,8 +162,8 @@ const SensorsPage = () => {
             </tr>
           </thead>
           <tbody>
-            {sensors.length > 0 ? (
-              sensors.map((sensor) => (
+            {data.length > 0 ? (
+              data.map((sensor) => (
                 <tr key={sensor.id}>
                   {editId === sensor.id ? (
                     <>
