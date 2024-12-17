@@ -9,7 +9,7 @@ app.use(express.json())
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'Messi8',
+    password: 'ShadowKnight1305+',
     database: 'climatizacao_salas',
 })
 
@@ -87,7 +87,11 @@ app.delete('/users/:id', (req, res) => {
 
 
 app.get('/sensors', (req, res) => {
-    const sql = "SELECT * FROM sensors";
+    const sql = `SELECT sensors.*, 
+                 read_sensors.temperatura_atual AS temp_atual, 
+                 read_sensors.humidade_atual AS hum_atual 
+                 FROM sensors
+                 LEFT JOIN read_sensors ON sensors.id_read = read_sensors.id_read;`;
     db.query(sql, (err, data) => {
         if (err) return res.json({ error: "Erro ao consultar a tabela sensors.", details: err });
         return res.json(data);

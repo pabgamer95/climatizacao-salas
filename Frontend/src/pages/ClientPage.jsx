@@ -1,26 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Link } from 'react-router-dom'; // Para navegação
+import React from 'react';
+import useSensors from '../Backend/sensors';
+import { Link } from 'react-router-dom'; // Adicionei o useNavigate para redirecionamento
 import './css/sensors.css';
 
 const SensorsPage = () => {
-  const [sensors, setSensors] = useState([]);
-  const [error, setError] = useState(null);
+  const { data, error} = useSensors([]);
 
-  // Função para buscar sensores da API
-  useEffect(() => {
-    const fetchSensors = async () => {
-      try {
-        const response = await axios.get('http://localhost:8081/sensors');
-        setSensors(response.data); // Armazenando os dados dos sensores
-      } catch (err) {
-        setError('Erro ao carregar sensores.');
-        console.error('Erro ao buscar sensores:', err); // Log de erro
-      }
-    };
-
-    fetchSensors(); // Chama a função ao carregar a página
-  }, []); // O array vazio garante que a função seja chamada uma vez
 
   return (
     <div>
@@ -48,8 +33,8 @@ const SensorsPage = () => {
             </tr>
           </thead>
           <tbody>
-            {sensors.length > 0 ? (
-              sensors.map((sensor) => (
+            {data.length > 0 ? (
+              data.map((sensor) => (
                 <tr key={sensor.id}>
                   <td>{sensor.nome}</td>
                   <td>{sensor.localizacao}</td>
