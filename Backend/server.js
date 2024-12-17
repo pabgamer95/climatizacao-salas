@@ -9,7 +9,7 @@ app.use(express.json())
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'ShadowKnight1305+',
+    password: 'Messi8',
     database: 'climatizacao_salas',
 })
 
@@ -262,23 +262,4 @@ app.get('/warning', (req, res) => {
 
 app.listen(8081, () => {
     console.log("Servidor ouvindo na porta 8081");
-});
-
-app.post('/sensors', (req, res) => {
-    const sql = "INSERT INTO sensors (nome, localizacao, estado, id_read, id_config, id_model) VALUES (?, ?, ?, ?, ?, ?)";
-    const values = [
-        req.body.nome, 
-        req.body.localizacao, 
-        req.body.estado, 
-        req.body.id_read, 
-        req.body.id_config, 
-        req.body.id_model
-    ];
-
-    db.query(sql, values, (err, result) => {
-        if (err) {
-            return res.json({ message: 'Something unexpected has occurred: ' + err });
-        }
-        return res.json({ success: 'Sensor criado com sucesso' });
-    });
 });

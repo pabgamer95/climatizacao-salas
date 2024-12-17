@@ -1,68 +1,72 @@
-  import React, { useState, useEffect } from 'react';
-  import axios from 'axios';
-  import { Link } from 'react-router-dom'; // Para manter a navegação
-  import './css/sensors.css';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom'; // Para navegação
+import './css/sensors.css';
 
-  const SensorsPage = () => {
-    const [sensors, setSensors] = useState([]);
-    const [error, setError] = useState(null);
+const SensorsPage = () => {
+  const [sensors, setSensors] = useState([]);
+  const [error, setError] = useState(null);
 
-    // Função para buscar sensores da API
-    useEffect(() => {
-      const fetchSensors = async () => {
-        try {
-          const response = await axios.get('http://localhost:8081/sensors');
-          setSensors(response.data);
-        } catch (err) {
-          setError('Erro ao carregar sensores.');
-          console.error('Erro ao buscar sensores:', err);
-        }
-      };
+  // Função para buscar sensores da API
+  useEffect(() => {
+    const fetchSensors = async () => {
+      try {
+        const response = await axios.get('http://localhost:8081/sensors');
+        setSensors(response.data); // Armazenando os dados dos sensores
+      } catch (err) {
+        setError('Erro ao carregar sensores.');
+        console.error('Erro ao buscar sensores:', err); // Log de erro
+      }
+    };
 
-      fetchSensors();
-    }, []);
+    fetchSensors(); // Chama a função ao carregar a página
+  }, []); // O array vazio garante que a função seja chamada uma vez
 
-    return (
+  return (
+    <div>
+      <header>
+        <nav className="navBar">
+          <h1 className="nomeApp">AMBIENTRACK</h1>
+          <Link to="/admin" className="hiperLinks">UTILIZADORES</Link>
+          <Link to="#" className="hiperLinks">SENSORES</Link>
+          <a href="#" className="hiperLinks">ALERTAS</a>
+        </nav>
+      </header>
+
+      <h1 className="txt1">Lista de Sensores</h1>
+
+      {error && <p style={{ color: 'red' }}>{error}</p>} {/* Exibe erro se houver */}
+
       <div>
-        <header>
-          <nav className="navBar">
-            <h1 className="nomeApp">AMBIENTRACK</h1>
-            <Link to="/admin" className="hiperLinks">UTILIZADORES</Link>
-            <Link to="#" className="hiperLinks">SENSORES</Link>
-            <a href="#" className="hiperLinks">ALERTAS</a>
-          </nav>
-        </header>
-
-        <h1 className="txt1">Lista de Sensores</h1>
-
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-
-        <div>
-          <table className="tabela1">
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>Localização</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sensors.length > 0 ? (
-                sensors.map((sensor) => (
-                  <tr key={sensor.id}>
-                    <td>{sensor.nome}</td>
-                    <td>{sensor.localizacao}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="2">A carregar sensores...</td>
+        <table className="tabela1">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Localização</th>
+              <th>Temperatura Atual</th>
+              <th>Humidade Atual</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sensors.length > 0 ? (
+              sensors.map((sensor) => (
+                <tr key={sensor.id}>
+                  <td>{sensor.nome}</td>
+                  <td>{sensor.localizacao}</td>
+                  <td>{sensor.temp_atual}ºC</td> {/* Exibindo a Temperatura Atual */}
+                  <td>{sensor.hum_atual}%</td>  {/* Exibindo a Humidade Atual */}
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4">A carregar sensores...</td> {/* Exibe quando está carregando */}
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
-    );
-  };
+    </div>
+  );
+};
 
-  export default SensorsPage;
+export default SensorsPage;
