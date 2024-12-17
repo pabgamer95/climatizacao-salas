@@ -6,13 +6,11 @@ import './css/sensors.css';
 import Cookies from 'js-cookie'; // Importando o Cookies
 
 const SensorsPage = () => {
-  const { data, setData } = useSensors([]);
-  const [sensors, setSensors] = useState([]);
+  const { data, error, setData } = useSensors([]);
   const [editId, setEditId] = useState(-1);
   const [sensorName, setSensorName] = useState('');
   const [sensorLocation, setSensorLocation] = useState('');
   const [sensorStatus, setSensorStatus] = useState('');
-  const [error, setError] = useState(null);
   const [selectedSensor, setSelectedSensor] = useState(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
@@ -89,6 +87,7 @@ const SensorsPage = () => {
     axios
       .put(`http://localhost:8081/sensors/${editId}`, updatedSensor)
       .then(() => {
+        // Fazer uma nova requisição para obter os dados atualizados do sensor
         return axios.get(`http://localhost:8081/sensors/${editId}`);
       })
       .then((res) => {
@@ -96,7 +95,7 @@ const SensorsPage = () => {
         const updatedSensors = data.map((sensor) =>
           sensor.id === editId ? updatedSensorFromBackend : sensor
         );
-        setSensors(updatedSensors);
+        setData(updatedSensors);
         setEditId(-1);
       })
       .catch((err) => {
@@ -115,7 +114,8 @@ const SensorsPage = () => {
           setData(updatedData);
         })
         .catch((er) => {
-          console.error('Erro ao excluir o utilizador:', er);
+          console.error('Erro ao excluir o sensor:', er);
+          alert('Erro ao excluir o sensor.');
         });
     }
   };
