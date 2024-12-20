@@ -1,44 +1,46 @@
 /* Geral */
 body {
-  background-color: #F6FCDF;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #F6FCDF ;
+  font-family: Arial, sans-serif;
   margin: 0;
-  color: #333;
 }
-
 
 .navBar {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: fixed;
-  top: 0;
-  left: 0;
+  align-items: center;  
+  position: fixed;              
+  top: 0;                       
+  left: 0;                      
   width: 100%;
   background-color: #4C7845;
-  color: white;
-  padding: 15px 30px;
+  color: white;    
+  padding: 20px;
+  font-size: 20px; 
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .nomeApp {
-  font-size: 1.6em;
+  margin-left: 5%;
+  font-size: 1.4em;
   font-weight: bold;
+  margin-right: 100px;
 }
 
 .hiperLinks {
+  margin-left: auto;
+  margin-right: auto;
   text-decoration: none;
-  color: white;
+  color: #FFF;
   font-size: 1em;
-  margin-left: 15px;
-  transition: color 0.3s;
+  transition: color 0.2s;
 }
 
 .hiperLinks:hover {
-  color: #ddd;
+color: grey;
+text-decoration: underline;
 }
 
-.txt1 {
+.txt {
   text-align: center;
   font-size: 2.5em;
   font-weight: 600;
@@ -46,10 +48,22 @@ body {
   margin-top: 100px;
 }
 
-.tabela1 {
+.contents{
+  display: flex;
+  width: 80%; 
+  margin: 0 auto;
+  justify-content: space-between;
+}
+
+.preferences{
+  display: flex;
+  flex-direction: column;
+}
+
+.tabela {
   padding: 50px;
   width: 80%;
-  margin: 60px auto;
+  margin: 30px auto;
   border-collapse: collapse;
   font-size: 1.2em;
   background-color: white;
@@ -57,20 +71,20 @@ body {
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.tabela1 th, .tabela1 td {
+.tabela th, .tabela td {
   padding: 12px 20px;
   text-align: left;
   border-bottom: 1px solid #ddd;
   text-align: center;
 }
 
-.tabela1 th {
+.tabela th {
   background-color: #4C7845;
   color: white;
   font-size: 1.1em;
 }
 
-.tabela1 tbody tr:hover {
+.tabela tbody tr:hover {
   background-color: #f9f9f9;
 }
 
@@ -79,7 +93,8 @@ body {
   justify-content: center;
 }
 
-.btnEliminar, .btnEditar {
+
+.btnEliminar, .btnEditar, .btnInfo {
   padding: 10px 15px;
   border: none;
   border-radius: 30px;
@@ -126,7 +141,7 @@ input[type="text"]:focus, select:focus {
   outline: none;
 }
 
-.btnCriarUtilizador {
+.btnCriar {
   margin-top: 40px;
   padding: 10px 20px;
   background-color: #4CAF50;
@@ -136,10 +151,9 @@ input[type="text"]:focus, select:focus {
   font-size: 16px;
   cursor: pointer;
   text-decoration: none;
-  margin-left: 90px;
 }
 
-.btnCriarUtilizador:hover {
+.btnCriar:hover {
   background-color: #45a049;
 }
 
@@ -149,7 +163,7 @@ input[type="text"]:focus, select:focus {
 
 .btnInfo:hover {
   background-color: #0e2884;
-  margin-left: 10px;
+  transform: scale(1.05);
 }
 
 .btnLogout {
@@ -179,3 +193,37 @@ input[type="text"]:focus, select:focus {
   background-color: #C0392B;
 }
 
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+}
+
+.btnFechar {
+  margin-top: 20px;
+  background: red;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btnFechar:hover {
+  background: darkred;
+}

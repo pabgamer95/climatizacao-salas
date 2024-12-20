@@ -2,10 +2,10 @@ import React, { useState} from 'react';
 import axios from 'axios';
 import useSensors from '../Backend/sensors';
 import { Link, useNavigate } from 'react-router-dom'; // Adicionei o useNavigate para redirecionamento
-import './css/sensors.css';
+import './css/admin.css';
 import Cookies from 'js-cookie'; // Importando o Cookies
 
-const SensorsPage = () => {
+export default function SensorsPage() {
   const { data, error, setData } = useSensors([]);
   const [editId, setEditId] = useState(-1);
   const [sensorName, setSensorName] = useState('');
@@ -13,6 +13,7 @@ const SensorsPage = () => {
   const [sensorStatus, setSensorStatus] = useState('');
   const [selectedSensor, setSelectedSensor] = useState(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [sensorTypeStatus, setSensorTypeStatus] = useState('all');
 
   
   const navigate = useNavigate(); // Inicializa o useNavigate
@@ -120,6 +121,10 @@ const SensorsPage = () => {
     }
   };
 
+  const handleSensorTypeStatusChange = (e) => {
+    setSensorTypeStatus(e.target.value);
+  };
+
   // Função para fazer o logout
   const handleLogout = () => {
     // Remover o cookie "loggedInUser"
@@ -141,18 +146,29 @@ const SensorsPage = () => {
         </nav>
       </header>
 
-      <h1 className="txt1">Lista de Sensores</h1>
+      <h1 className="txt">Lista de Sensores</h1>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
       <div>
-        <Link to="/CreateSensor">
-          <button className="btnCriarUtilizador">Criar Sensor</button>
-        </Link>
-      </div>
 
-      <div>
-        <table className="tabela1">
+        <div class="contents">
+          <Link to="/admin/sensors/createSensor">
+            <button className="btnCriar">Criar Sensor</button>
+          </Link>
+
+          <div class="preferences">
+            <label htmlFor="sensorTypeStatus">Mostrar usuários:</label>
+            <select id="sensorTypeStatus" value={sensorTypeStatus} onChange={handleSensorTypeStatusChange}>
+              <option value="all">Todos</option>
+              <option value="ativo">Ativa</option>
+              <option value="inativo">Inativo</option>
+              <option value="danificado">Danificado</option>
+            </select>
+          </div>
+        </div>
+
+        <table className="tabela">
           <thead>
             <tr>
               <th>Nome</th>
@@ -165,48 +181,53 @@ const SensorsPage = () => {
             {data.length > 0 ? (
               data.map((sensor) => (
                 <tr key={sensor.id}>
-                  {editId === sensor.id ? (
-                    <>
-                      <td>
-                        <input
-                          type="text"
-                          value={sensorName}
-                          onChange={e => setSensorName(e.target.value)}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="text"
-                          value={sensorLocation}
-                          onChange={e => setSensorLocation(e.target.value)}
-                        />
-                      </td>
-                      <td>
-                        <select
-                          value={sensorStatus || ''}
-                          onChange={(e) => setSensorStatus(e.target.value)}
-                        >
-                          <option value="Danificado">Danificado</option>
-                          <option value="Ativo">Ativo</option>
-                          <option value="Inativo">Inativo</option>
-                        </select>
-                      </td>
-                      <td>
-                        <button className="btnEditar" onClick={handleUpdate}>Atualizar</button>
-                      </td>
-                    </>
-                  ) : (
-                    <>
-                      <td>{sensor.nome}</td>
-                      <td>{sensor.localizacao}</td>
-                      <td>{sensor.estado}</td>
-                      <td className="btnAcao">
-                        <button className="btnEditar" onClick={() => handleEdit(sensor.id)}>Editar</button>
-                        <button className="btnEliminar" onClick={() => handleDelete(sensor.id)}>Excluir</button>
-                        <button className='btnInfo' onClick={() => handleInfo(sensor.id)}>Info</button>
-                      </td>
-                    </>
-                  )}
+                  {(sensorTypeStatus === 'all') || // Exibe todos os usuários
+                  (sensorTypeStatus === 'ativo' && sensor.estado === 'Ativo') || // Corrigido para 'ativo'
+                  (sensorTypeStatus === 'inativo' && sensor.estado === 'Inativo') || // Corrigido para 'inativo'
+                  (sensorTypeStatus === 'danificado' && sensor.estado === 'Danificado') ? ( // Corrigido para 'danificado'
+                    editId === sensor.id ? (
+                      <>
+                        <td>
+                          <input
+                            type="text"
+                            value={sensorName}
+                            onChange={e => setSensorName(e.target.value)}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            value={sensorLocation}
+                            onChange={e => setSensorLocation(e.target.value)}
+                          />
+                        </td>
+                        <td>
+                          <select
+                            value={sensorStatus || ''}
+                            onChange={(e) => setSensorStatus(e.target.value)}
+                          >
+                            <option value="Danificado">Danificado</option>
+                            <option value="Ativo">Ativo</option>
+                            <option value="Inativo">Inativo</option>
+                          </select>
+                        </td>
+                        <td>
+                          <button className="btnEditar" onClick={handleUpdate}>Atualizar</button>
+                        </td>
+                      </>
+                    ) : (
+                      <>
+                        <td>{sensor.nome}</td>
+                        <td>{sensor.localizacao}</td>
+                        <td>{sensor.estado}</td>
+                        <td className="btnAcao">
+                          <button className="btnEditar" onClick={() => handleEdit(sensor.id)}>Editar</button>
+                          <button className="btnEliminar" onClick={() => handleDelete(sensor.id)}>Excluir</button>
+                          <button className='btnInfo' onClick={() => handleInfo(sensor.id)}>Info</button>
+                        </td>
+                      </>
+                    )
+                  ) : null}
                 </tr>
               ))
             ) : (
@@ -225,5 +246,3 @@ const SensorsPage = () => {
     </div>
   );
 };
-
-export default SensorsPage;

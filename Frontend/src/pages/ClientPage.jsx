@@ -1,29 +1,38 @@
 import React from 'react';
 import useSensors from '../Backend/sensors';
-import { Link } from 'react-router-dom'; // Adicionei o useNavigate para redirecionamento
-import './css/sensors.css';
+import { Link, useNavigate } from 'react-router-dom'; // Adicionei o useNavigate para redirecionamento
+import './css/admin.css';
+import Cookies from 'js-cookie';
 
-const SensorsPage = () => {
+export default function ClientPage() {
+  const navigate = useNavigate(); // Inicializa o useNavigate
   const { data, error} = useSensors([]);
 
+  const handleLogout = () => {
+    // Remover o cookie "loggedInUser"
+    Cookies.remove('loggedInUser', { path: '/' });
+
+    // Redirecionar para a página inicial
+    navigate('/'); // Redireciona para a página desejada ("/")
+  };
 
   return (
     <div>
       <header>
         <nav className="navBar">
           <h1 className="nomeApp">AMBIENTRACK</h1>
-          <Link to="/admin" className="hiperLinks">UTILIZADORES</Link>
           <Link to="#" className="hiperLinks">SENSORES</Link>
           <a href="#" className="hiperLinks">ALERTAS</a>
+          <button className="btnLogout" onClick={handleLogout}>Sair</button>
         </nav>
       </header>
 
-      <h1 className="txt1">Lista de Sensores</h1>
+      <h1 className="txt">Lista de Sensores</h1>
 
       {error && <p style={{ color: 'red' }}>{error}</p>} {/* Exibe erro se houver */}
 
       <div>
-        <table className="tabela1">
+        <table className="tabela">
           <thead>
             <tr>
               <th>Nome</th>
@@ -53,5 +62,3 @@ const SensorsPage = () => {
     </div>
   );
 };
-
-export default SensorsPage;

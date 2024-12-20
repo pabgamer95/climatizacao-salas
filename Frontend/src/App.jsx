@@ -48,6 +48,16 @@ function App() {
             }
           />
 
+          {/* Rota protegida para Técnico */}
+          <Route
+            path="/technician/createSensor"
+            element={
+             // <PrivateRoute role="technician">
+                <CreateSensor />
+              //</PrivateRoute>
+            }
+          />
+
           <Route
             path="admin/register"
             element={
@@ -64,13 +74,12 @@ function App() {
             } 
           />
 
-          {/* Rota para a nova página de Criar Sensores */}
-          <Route path="CreateSensor" 
-            element={
+          {/* Rota para a nova página de Sensores */}
+          <Route path="admin/sensors/createSensor" 
+          element={
             <CreateSensor />
-                      } 
-                    />
-          
+            } 
+          />
 
         </Routes>
       </Router>

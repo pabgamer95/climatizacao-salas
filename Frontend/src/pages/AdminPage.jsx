@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom'; // Use useNavigate aqui
 import axios from 'axios';
 import useUsers from '../Backend/users';
 import './css/admin.css';
-import logoteste from './imagens/logoteste.webp'; 
 import Cookies from 'js-cookie'; // Importando o Cookies
 
 export default function AdminPage() {
@@ -13,6 +12,7 @@ export default function AdminPage() {
   const [unome, usetnome] = useState('');
   const [uemail, usetmail] = useState('');
   const [role, setRole] = useState('');
+  const [userType, setUserType] = useState('all');
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error fetching data: {error.message}</p>;
@@ -76,6 +76,10 @@ export default function AdminPage() {
     }
   };
 
+  const handleUserTypeChange = (e) => {
+    setUserType(e.target.value);
+  };
+
   // Função para fazer o logout
   const handleLogout = () => {
     // Remover o cookie "loggedInUser"
@@ -103,16 +107,26 @@ export default function AdminPage() {
         </nav>
       </header>
 
-      <h1 className="txt1">Lista de Utilizadores</h1>
+      <h1 className="txt">Lista de Utilizadores</h1>
 
       <div>
-        <Link to="/admin/register">
-          <button className="btnCriarUtilizador">Criar Utilizador</button>
-        </Link>
-      </div>
+        <div class="contents">
+          <Link to="/admin/register">
+            <button className="btnCriar">Criar Utilizador</button>
+          </Link>
 
-      <div>
-        <table className="tabela1">
+          <div class="preferences">
+            <label htmlFor="userType">Mostrar usuários:</label>
+            <select id="userType" value={userType} onChange={handleUserTypeChange}>
+              <option value="all">Todos</option>
+              <option value="admin">Admins</option>
+              <option value="technician">Técnicos</option>
+              <option value="client">Clientes</option>
+            </select>
+          </div>
+        </div>
+
+        <table className="tabela">
           <thead>
             <tr>
               <th>Name</th>
@@ -123,56 +137,61 @@ export default function AdminPage() {
           </thead>
           <tbody>
             {data.map((d, i) =>
-              d.id === editId ? (
-                <tr key={i}>
-                  <th>
-                    <input
-                      type="text"
-                      value={unome || ''}
-                      onChange={(e) => usetnome(e.target.value)}
-                    />
-                  </th>
-                  <th>
-                    <input
-                      type="text"
-                      value={uemail || ''}
-                      onChange={(e) => usetmail(e.target.value)}
-                    />
-                  </th>
-                  <td>
-                    <select
-                      value={role || ''}
-                      onChange={(e) => setRole(e.target.value)}
-                    >
-                      <option value="3">Client</option>
-                      <option value="2">Technician</option>
-                      <option value="1">Admin</option>
-                    </select>
-                  </td>
-                  <td>
-                    <button className="btnEditar" onClick={handleUpdate}>
-                      Update
-                    </button>
-                  </td>
-                </tr>
-              ) : (
-                <tr key={i}>
-                  <td>{d.nome}</td>
-                  <td>{d.email}</td>
-                  <td>{d.role_name}</td>
-                  <td className="btnAcao">
-                    <button className="btnEditar" onClick={() => handleEdit(d.id)}>
-                      Edit
-                    </button>
-                    <button
-                      className="btnEliminar"
-                      onClick={() => handleDelete(d.id)}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              )
+              (userType === 'all') || // Exibe todos os usuários
+              (userType === 'admin' && d.role_name === 'Admin') ||
+              (userType === 'technician' && d.role_name === 'Technician') ||
+              (userType === 'client' && d.role_name === 'Client') ? (
+                d.id === editId ? (
+                  <tr key={i}>
+                    <th>
+                      <input
+                        type="text"
+                        value={unome || ''}
+                        onChange={(e) => usetnome(e.target.value)}
+                      />
+                    </th>
+                    <th>
+                      <input
+                        type="text"
+                        value={uemail || ''}
+                        onChange={(e) => usetmail(e.target.value)}
+                      />
+                    </th>
+                    <td>
+                      <select
+                        value={role || ''}
+                        onChange={(e) => setRole(e.target.value)}
+                      >
+                        <option value="3">Client</option>
+                        <option value="2">Technician</option>
+                        <option value="1">Admin</option>
+                      </select>
+                    </td>
+                    <td>
+                      <button className="btnEditar" onClick={handleUpdate}>
+                        Update
+                      </button>
+                    </td>
+                  </tr>
+                ) : (
+                  <tr key={i}>
+                    <td>{d.nome}</td>
+                    <td>{d.email}</td>
+                    <td>{d.role_name}</td>
+                    <td className="btnAcao">
+                      <button className="btnEditar" onClick={() => handleEdit(d.id)}>
+                        Edit
+                      </button>
+                      <button
+                        className="btnEliminar"
+                        onClick={() => handleDelete(d.id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                )
+              ) : null // Oculta usuários que não correspondem à seleção
             )}
           </tbody>
         </table>

@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useUsers from '../Backend/users';
 import axios from 'axios';
+import './css/create.css';
 
-const Register = () => {
-    const {data} = useUsers();
+export default function Register() {
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -32,14 +31,14 @@ const Register = () => {
     };
 
     return (
-        <div style={styles.container}>
+        <div class="create">
             
-            <button onClick={handleGoBack} style={styles.backButton}>
+            <button onClick={handleGoBack} class="backButton">
                 Voltar
             </button>
 
-            <form onSubmit={handleSubmit} style={styles.form}>
-                <h2>Registro</h2>
+            <form onSubmit={handleSubmit} class="form">
+                <h3 class="title">Registo</h3>
 
                 <label htmlFor="nome">Nome de Usuário:</label>
                 <input
@@ -48,7 +47,7 @@ const Register = () => {
                     value={nome}
                     onChange={(e) => setNome(e.target.value)}
                     required
-                    style={styles.input}
+                    class="input"
                 />
 
                 <label htmlFor="email">E-mail:</label>
@@ -58,7 +57,7 @@ const Register = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    style={styles.input}
+                    class="input"
                 />
 
                 <label htmlFor="password">Senha:</label>
@@ -68,7 +67,7 @@ const Register = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    style={styles.input}
+                    class="input"
                 />
 
                 <label htmlFor="role">Função:</label>
@@ -79,63 +78,16 @@ const Register = () => {
                         setRole(e.target.value);
                         console.log("Role selecionado:", e.target.value); 
                     }}
-                    style={styles.input}
+                    class="input"
                 >
                     <option value="3">Client</option>
                     <option value="2">Technician</option>
                     <option value="1">Admin</option>
                 </select>
                 
-                <input type="submit" value="Criar Utilizador" style={styles.button} />
+                <input type="submit" value="Criar Utilizador" class="button"/>
             </form>
         </div>
     );
 };
 
-const styles = {
-    container: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        backgroundColor: '#f4f4f4',
-        flexDirection: 'column', 
-        position: 'relative',  
-    },
-    form: {
-        background: 'white',
-        padding: '20px',
-        borderRadius: '5px',
-        boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-        width: '300px',
-    },
-    input: {
-        width: '100%',
-        padding: '10px',
-        margin: '10px 0',
-        border: '1px solid #ccc',
-        borderRadius: '5px',
-    },
-    button: {
-        backgroundColor: '#5cb85c',
-        color: 'white',
-        border: 'none',
-        padding: '10px',
-        borderRadius: '5px',
-        cursor: 'pointer',
-        width: '100%',
-    },
-    backButton: {
-        position: 'fixed', 
-        top: '20px',
-        left: '20px',
-        backgroundColor: '#5cb85c',
-        color: 'white',
-        border: 'none',
-        padding: '10px',
-        borderRadius: '5px',
-        cursor: 'pointer',
-    }
-};
-
-export default Register;
