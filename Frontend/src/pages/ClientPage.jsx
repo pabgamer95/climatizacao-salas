@@ -21,8 +21,7 @@ export default function ClientPage() {
       <header>
         <nav className="navBar">
           <h1 className="nomeApp">AMBIENTRACK</h1>
-          <Link to="#" className="hiperLinks">SENSORES</Link>
-          <a href="#" className="hiperLinks">ALERTAS</a>
+          
           <button className="btnLogout" onClick={handleLogout}>Sair</button>
         </nav>
       </header>

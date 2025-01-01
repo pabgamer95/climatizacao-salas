@@ -116,7 +116,7 @@ export default function AdminPage() {
           </Link>
 
           <div class="preferences">
-            <label htmlFor="userType">Mostrar usuários:</label>
+            <label htmlFor="userType">Mostrar Utilizadores:</label>
             <select id="userType" value={userType} onChange={handleUserTypeChange}>
               <option value="all">Todos</option>
               <option value="admin">Admins</option>

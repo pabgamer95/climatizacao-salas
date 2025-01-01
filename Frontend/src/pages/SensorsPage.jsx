@@ -158,7 +158,7 @@ export default function SensorsPage() {
           </Link>
 
           <div class="preferences">
-            <label htmlFor="sensorTypeStatus">Mostrar usuários:</label>
+            <label htmlFor="sensorTypeStatus">Mostrar Sensores:</label>
             <select id="sensorTypeStatus" value={sensorTypeStatus} onChange={handleSensorTypeStatusChange}>
               <option value="all">Todos</option>
               <option value="ativo">Ativa</option>
