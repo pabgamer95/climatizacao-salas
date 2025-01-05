@@ -100,9 +100,7 @@ export default function AdminPage() {
           <Link to="/admin/sensors" className="hiperLinks">
             SENSORES
           </Link>
-          <a href="#" className="hiperLinks">
-            ALERTAS
-          </a>
+          
           <button className="btnLogout" onClick={handleLogout}>Sair</button>
         </nav>
       </header>

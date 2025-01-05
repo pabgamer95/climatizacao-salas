@@ -141,7 +141,7 @@ export default function SensorsPage() {
           <h1 className="nomeApp">AMBIENTRACK</h1>
           <Link to="/admin" className="hiperLinks">UTILIZADORES</Link>
           <Link to="#" className="hiperLinks">SENSORES</Link>
-          <a href="#" className="hiperLinks">ALERTAS</a>
+          
           <button className="btnLogout" onClick={handleLogout}>Sair</button>
         </nav>
       </header>
