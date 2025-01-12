@@ -117,6 +117,20 @@ app.get('/registo/:id', (req, res) => {
     });
 });
 
+app.get('/warning', (req, res) => {
+
+    const sql = `SELECT warning.*,
+                 sensors.nome AS sensor,
+                 sensors.localizacao AS location
+                 FROM warning
+                 LEFT JOIN sensors ON warning.id_sensor = sensors.id`;
+
+    db.query(sql, (err, data) => {
+        if (err) return res.json({ error: "Erro ao consultar o registo.", details: err });
+        return res.json(data); // Retorna todos os utilizadores com a Role
+    });
+});
+
 app.get('/sensors', (req, res) => {
     const sql = `SELECT sensors.*, 
                  read_sensors.temperatura_atual AS temp_atual, 
@@ -293,9 +307,81 @@ app.delete('/sensors/:id', (req, res) => {
     });
 });
 
+const verificarLimites = (sensor) => {
+    const { temp_atual, hum_atual } = sensor;
+    let mensagem = '';
+
+    // Verificando limites de temperatura
+    if (temp_atual > sensor.temp_max) {
+        mensagem += `Temperatura atual ${temp_atual} excedeu o limite máximo ${sensor.temp_max}. `;
+    } else if (temp_atual < sensor.temp_min) {
+        mensagem += `Temperatura atual ${temp_atual} abaixo do limite mínimo ${sensor.temp_min}. `;
+    }
+
+    // Verificando limites de humidade
+    if (hum_atual > sensor.hum_max) {
+        mensagem += `Humidade atual ${hum_atual} excedeu o limite máximo ${sensor.hum_max}. `;
+    } else if (hum_atual < sensor.hum_min) {
+        mensagem += `Humidade atual ${hum_atual} abaixo do limite mínimo ${sensor.hum_min}. `;
+    }
+
+    return mensagem;
+};
+
+// Dentro do código de inserção de registros automáticos (exemplo no cron)
+cron.schedule('*/10 * * * *', async () => {
+       console.log('Iniciando registo automático dos sensores...');
+
+    const query = `
+        SELECT sensors.id, 
+               read_sensors.temperatura_atual AS temp_atual, 
+               read_sensors.humidade_atual AS hum_atual,
+               config_sensor.temperatura_max AS temp_max,
+               config_sensor.temperatura_min AS temp_min,
+               config_sensor.humidade_max AS hum_max,
+               config_sensor.humidade_min AS hum_min
+        FROM sensors
+        LEFT JOIN read_sensors ON sensors.id_read = read_sensors.id_read
+        LEFT JOIN config_sensor ON sensors.id_config = config_sensor.id_config;
+    `;
+
+    db.query(query, (err, sensors) => {
+        if (err) {
+            console.error('Erro ao buscar dados dos sensores:', err);
+            return;
+        }
+
+        // Inserir os registos na tabela `registo` e verificar limites
+        sensors.forEach((sensor) => {
+            const limiteMensagem = verificarLimites(sensor);
+
+            if (limiteMensagem) {
+                console.log(`Alerta para o sensor ID ${sensor.id}: ${limiteMensagem}`);
+
+                // Inserir na tabela warning com a mensagem e hora atual
+                const insertWarningQuery = `
+                    INSERT INTO warning (mensagem, data_warning, id_sensor)
+                    VALUES (?, NOW(), ?);
+                `;
+
+                db.query(insertWarningQuery, [limiteMensagem, sensor.id], (err) => {
+                    if (err) {
+                        console.error(`Erro ao inserir alerta na tabela warning: ${err}`);
+                    } else {
+                        console.log(`Alerta inserido na tabela warning para o sensor ID ${sensor.id}.`);
+                    }
+                });
+            } else {
+                console.log(`Nenhum alerta do sensor: ${sensor.id}`)
+            }
+            
+        });
+    });
+});
+
 // Tarefa automática para registar sensores a cada 5 minutos
-cron.schedule('*/5 * * * *', async () => {
-      console.log('Iniciando registo automático dos sensores...');
+cron.schedule('*/10 * * * *', async () => {
+       console.log('Iniciando registo automático dos sensores...');
   
     const query = `
       SELECT sensors.id, read_sensors.temperatura_atual AS temp_atual, 
@@ -326,7 +412,7 @@ cron.schedule('*/5 * * * *', async () => {
         });
       });
     });
-  }); 
+  });
   
 
 app.listen(8081, () => {

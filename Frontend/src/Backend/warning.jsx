@@ -1,20 +1,20 @@
 import { useState, useEffect } from 'react';
 
-const useRegisto = () => {
-  const [dataRegisto, setDataRegisto] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [errorRegisto, setError] = useState(null);
+const useWarning = () => {
+  const [dataW, setData] = useState([]);
+  const [loadingW, setLoading] = useState(true);
+  const [errorW, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await fetch('http://localhost:8081/registo');
+        const response = await fetch('http://localhost:8081/warning');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const result = await response.json();
-        setDataRegisto(result);
+        setData(result);
       } catch (error) {
         setError(error);
       } finally {
@@ -25,7 +25,7 @@ const useRegisto = () => {
     fetchData();
   }, []);
 
-  return { dataRegisto, loading, errorRegisto, setDataRegisto };
+  return { dataW, loadingW, errorW, setData };
 };
 
-export default useRegisto;
+export default useWarning;

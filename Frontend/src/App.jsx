@@ -7,6 +7,9 @@ import TechnicianPage from './pages/TechnicianPage';
 import Register from './pages/Register';
 import SensorsPage from './pages/SensorsPage';
 import CreateSensor from './pages/CreateSensor';
+import WarningsPageAdmin from './pages/WarningsPageAdmin';
+import WarningsPageClient from './pages/WarningsPageClient';
+import WarningsPageTech from './pages/WarningsPageTech';
 import PrivateRoute from './components/PrivateRoute';
 
 function App() {
@@ -38,12 +41,31 @@ function App() {
             }
           />
 
+          {/* Rota protegida para Cliente */}
+          <Route
+            path="/client/warning"
+            element={
+             // <PrivateRoute role="client">
+                <WarningsPageClient />
+              //</PrivateRoute>
+            }
+          />
+
           {/* Rota protegida para Técnico */}
           <Route
             path="/technician"
             element={
              // <PrivateRoute role="technician">
              <TechnicianPage />
+              //</PrivateRoute>
+            }
+          />
+
+<Route
+            path="/technician/warning"
+            element={
+             // <PrivateRoute role="technician">
+             <WarningsPageTech />
               //</PrivateRoute>
             }
           />
@@ -71,6 +93,13 @@ function App() {
           <Route path="admin/sensors" 
           element={
             <SensorsPage />
+            } 
+          />
+
+          {/* Rota para a nova página de Sensores */}
+          <Route path="admin/warning" 
+          element={
+            <WarningsPageAdmin />
             } 
           />
 

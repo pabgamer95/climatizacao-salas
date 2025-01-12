@@ -317,3 +317,7 @@ input[type="text"]:focus, select:focus {
   background-color: #f4f4f4; /* Cor de fundo do cabeçalho */
   z-index: 1; /* Garante que o cabeçalho fique acima do corpo da tabela */
 }
+
+.btnHistoricC{
+  align-self: center;
+}
