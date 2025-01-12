@@ -227,3 +227,93 @@ input[type="text"]:focus, select:focus {
 .btnFechar:hover {
   background: darkred;
 }
+
+.btnHistoric{
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  align-self: center;
+  width: 35px;
+  height: 5vh;
+  margin-left: 10px;
+  background-color: #8ca3f5;
+  padding: 3px;
+  border-radius: 20%;
+}
+
+.btnHistoric:hover{
+  background-color: #7591f7;
+  transform: scale(1.05);
+}
+
+.modalContentHistoric, .modalContentEdit {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  max-height: 500px;
+}
+
+.modalContentEdit h2{
+  margin-bottom: 10px;
+}
+
+.modalContentEdit input{
+  width: 50%;
+}
+
+.modalContentEdit input[type="number"] {
+  border: 2px solid #aaa4a4; /* Defina a espessura e cor da borda */
+  padding: 5px; /* Adiciona um pouco de espaçamento interno, se necessário */
+  border-radius: 4px; /* (opcional) Para bordas arredondadas */
+}
+
+.modalContentEdit .items{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.modalContentEdit .items .item{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 5%;
+}
+.modalContentEdit .edit{
+  justify-content: space-between;
+}
+.modalContentEdit .edit .item input{
+  width: 125px;
+}
+
+.modalContentHistoric h2{
+  margin-bottom: 5%;
+}
+
+.tabelaRegisto{
+  display: block;
+  max-height: 300px; /* Define a altura máxima para o corpo da tabela */
+  overflow-y: auto; /* Ativa o scroll vertical */
+}
+
+.tabelaRegisto td{
+  width: 150px;
+}
+
+.tabelaRegisto th{
+  background-color: #7591f7;
+
+}
+
+.tabelaRegisto th, .tabelaRegisto td {
+  border: 1px solid #ddd; /* Borda fina entre as células */
+  padding: 8px; /* Espaço dentro das células */
+  text-align: center; /* Centraliza o texto */
+}
+
+.tabelaRegisto thead {
+  position: sticky; /* Fixa o cabeçalho */
+  top: 0; /* Fica no topo */
+  background-color: #f4f4f4; /* Cor de fundo do cabeçalho */
+  z-index: 1; /* Garante que o cabeçalho fique acima do corpo da tabela */
+}

@@ -1,4 +1,5 @@
 const express = require('express')
+const cron = require('node-cron');
 const mysql = require('mysql')
 const cors = require('cors')
 
@@ -9,7 +10,7 @@ app.use(express.json())
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'Messi8',
+    password: 'ShadowKnight1305+',
     database: 'climatizacao_salas',
 })
 
@@ -85,6 +86,36 @@ app.delete('/users/:id', (req, res) => {
     })
 })
 
+app.get('/registo', (req, res) => {
+
+    const sql = `SELECT registo.*,
+                 sensors.nome AS sensor,
+                 sensors.localizacao AS location
+                 FROM registo
+                 LEFT JOIN sensors ON registo.id_sensor = sensors.id;`;
+
+    db.query(sql, (err, data) => {
+        if (err) return res.json({ error: "Erro ao consultar o registo.", details: err });
+        return res.json(data); // Retorna todos os utilizadores com a Role
+    });
+});
+
+app.get('/registo/:id', (req, res) => {
+
+    const sql = `SELECT registo.*,
+                 sensors.nome AS sensor,
+                 sensors.localizacao AS location
+                 FROM registo
+                 LEFT JOIN sensors ON registo.id_sensor = sensors.id
+                 WHERE registo.id_sensor = ?;`;
+
+    const sensorId = req.params.id;
+
+    db.query(sql, [sensorId],(err, data) => {
+        if (err) return res.json({ error: "Erro ao consultar o registo.", details: err });
+        return res.json(data); // Retorna todos os utilizadores com a Role
+    });
+});
 
 app.get('/sensors', (req, res) => {
     const sql = `SELECT sensors.*, 
@@ -94,6 +125,7 @@ app.get('/sensors', (req, res) => {
                  LEFT JOIN read_sensors ON sensors.id_read = read_sensors.id_read;`;
     db.query(sql, (err, data) => {
         if (err) return res.json({ error: "Erro ao consultar a tabela sensors.", details: err });
+
         return res.json(data);
     });
 });
@@ -118,7 +150,9 @@ app.get('/sensors/:id', (req, res) => {
 
     db.query(sql, [sensorId], (err, data) => {
         if (err) return res.json(err);
-        return res.json(data[0]); // Assuming `data` returns an array, `data[0]` will be the single user object
+
+        const sensor = data[0];
+        return res.json(sensor);
     });
 });
 
@@ -126,69 +160,48 @@ app.post('/sensors', (req, res) => {
     const { nome, localizacao, nome_modelo, fabricante } = req.body;
     console.log(req.body)
 
-    // Desabilitar a verificação de chaves estrangeiras
-    const disableForeignKeysSql = "SET foreign_key_checks = 0;";
-    db.query(disableForeignKeysSql, (err) => {
+    // 1. Inserir a referência na tabela 'read_sensors'
+    const insertReadSensorsSql = "INSERT INTO read_sensors (temperatura_atual, humidade_atual) VALUES (?, ?)";
+    db.query(insertReadSensorsSql, ["19.5", "50"], (err, result) => {
         if (err) {
-            return res.status(500).json({ error: "Erro ao desabilitar as chaves estrangeiras.", details: err });
+            return res.status(500).json({ error: "Erro ao inserir na tabela read_sensors.", details: err });
         }
 
-        // 1. Inserir o sensor na tabela 'sensors'
-        const insertSensorSql = "INSERT INTO sensors (nome, localizacao) VALUES (?, ?)";
-        db.query(insertSensorSql, [nome, localizacao], (err, result) => {
+        const readId = result.insertId; // O id da entrada criada em 'read_sensors'
+        console.log(readId);
 
-            console.log(insertSensorSql)
-            console.log([nome, localizacao])
-            console.log(err)
-            console.log(result)
-
+        // 2. Inserir a referência na tabela 'config_sensor'
+        const insertConfigSensorSql = "INSERT INTO config_sensor (temperatura_max, temperatura_min, humidade_max, humidade_min) VALUES (DEFAULT, DEFAULT, DEFAULT, DEFAULT);";
+        db.query(insertConfigSensorSql, (err, result) => {
             if (err) {
-                return res.status(500).json({ error: "Erro ao inserir o sensor.", details: err });
+                return res.status(500).json({ error: "Erro ao inserir na tabela config_sensor.", details: err });
             }
 
-            const sensorId = result.insertId;  // O id do sensor recém-criado
-            console.log(sensorId)
+            const configId = result.insertId; // O id da entrada criada em 'config_sensor'
+            console.log(configId);
 
-            // 2. Atualizar o sensor com os valores id_read, id_config, e id_model iguais ao sensorId
-            const updateSensorSql = "UPDATE sensors SET id_read = ?, id_config = ?, id_model = ? WHERE id = ?";
-            db.query(updateSensorSql, [sensorId, sensorId, sensorId, sensorId], (err) => {
+            // 3. Inserir as informações na tabela 'sensor_models'
+            const insertSensorModelSql = "INSERT INTO sensor_models (nome_modelo, fabricante) VALUES (?, ?)";
+            db.query(insertSensorModelSql, [nome_modelo, fabricante], (err, result) => {
                 if (err) {
-                    return res.status(500).json({ error: "Erro ao atualizar o sensor com os ids.", details: err });
+                    return res.status(500).json({ error: "Erro ao inserir na tabela sensor_models.", details: err });
                 }
 
-                // 3. Inserir a referência na tabela 'read_sensors' com o id do sensor
-                const insertReadSensorsSql = "INSERT INTO read_sensors (id_read, temperatura_atual, humidade_atual) VALUES (?, ?, ?)";
-                db.query(insertReadSensorsSql, [sensorId, "19.5", "50"], (err) => {
+                const modelId = result.insertId; // O id da entrada criada em 'sensor_models'
+                console.log(modelId);
+
+                // 4. Inserir na tabela 'sensors' com os ids criados acima
+                const insertSensorSql = "INSERT INTO sensors (nome, localizacao, id_read, id_config, id_model) VALUES (?, ?, ?, ?, ?)";
+                db.query(insertSensorSql, [nome, localizacao, readId, configId, modelId], (err, result) => {
                     if (err) {
-                        return res.status(500).json({ error: "Erro ao inserir a referência na tabela read_sensors.", details: err });
+                        return res.status(500).json({ error: "Erro ao inserir o sensor na tabela sensors.", details: err });
                     }
 
-                    // 4. Inserir a referência na tabela 'config_sensor' com o id do sensor
-                    const insertConfigSensorSql = "INSERT INTO config_sensor (id_config) VALUES (?)";
-                    db.query(insertConfigSensorSql, [sensorId], (err) => {
-                        if (err) {
-                            return res.status(500).json({ error: "Erro ao inserir a referência na tabela config_sensor.", details: err });
-                        }
+                    const sensorId = result.insertId; // O id do sensor criado
+                    console.log(sensorId);
 
-                        // 5. Inserir as informações na tabela 'sensor_model' com o modelo e fabricante, e associar o id do sensor
-                        const insertSensorModelSql = "INSERT INTO sensor_models (id_model, nome_modelo, fabricante) VALUES (?, ?, ?)";
-                        db.query(insertSensorModelSql, [sensorId, nome_modelo, fabricante], (err) => {
-                            if (err) {
-                                return res.status(500).json({ error: "Erro ao inserir as informações do sensor na tabela sensor_model.", details: err });
-                            }
-
-                            // Reabilitar as chaves estrangeiras após a operação
-                            const enableForeignKeysSql = "SET foreign_key_checks = 1;";
-                            db.query(enableForeignKeysSql, (err) => {
-                                if (err) {
-                                    return res.status(500).json({ error: "Erro ao reabilitar as chaves estrangeiras.", details: err });
-                                }
-
-                                // Se tudo correr bem, retornar sucesso
-                                return res.status(201).json({ success: "Sensor e referências inseridos com sucesso.", sensorId: sensorId });
-                            });
-                        });
-                    });
+                    // 5. Retornar sucesso
+                    return res.status(200).json({ message: "Sensor criado com sucesso!", sensorId });
                 });
             });
         });
@@ -199,70 +212,122 @@ app.put('/sensors/:id', (req, res) => {
     console.log("Atualizando sensor com ID:", req.params.id); // Debug
     console.log("Dados recebidos para atualização:", req.body); // Debug
 
-    const sql = "UPDATE sensors SET `nome` = ?, `localizacao` = ?, `estado` = ? WHERE `id` = ?";
-    
-    const values = [
-        req.body.nome,
-        req.body.localizacao, 
-        req.body.estado
+    const sensorId = req.params.id;
+
+    // Atualizar a tabela `config_sensor`
+    const configSql = `
+        UPDATE config_sensor 
+        SET temperatura_min = ?, temperatura_max = ?, humidade_min = ?, humidade_max = ? 
+        WHERE id_config = (
+            SELECT id_config FROM sensors WHERE id = ?
+        )
+    `;
+
+    const configValues = [
+        req.body.temp_min,
+        req.body.temp_max,
+        req.body.hum_min,
+        req.body.hum_max,
+        sensorId
     ];
 
-    db.query(sql, [...values, req.params.id], (err, result) => {
+    db.query(configSql, configValues, (err, result) => {
         if (err) {
-            console.error("Erro ao atualizar sensor:", err); // Debugging error
-            return res.status(500).json({ error: "Erro ao atualizar sensor", details: err });
+            console.error("Erro ao atualizar config_sensor:", err); // Debugging error
+            return res.status(500).json({ error: "Erro ao atualizar configurações do sensor", details: err });
         }
 
-        console.log("Sensor atualizado com sucesso:", result);
-        return res.status(200).json({ success: "Sensor atualizado com sucesso." });
+        // Atualizar a tabela `sensors` (se necessário)
+        const sensorSql = `
+            UPDATE sensors 
+            SET nome = ?, localizacao = ?, estado = ? 
+            WHERE id = ?;
+        `;
+
+        const sensorValues = [
+            req.body.nome,
+            req.body.localizacao,
+            req.body.estado,
+            sensorId
+        ];
+
+        db.query(sensorSql, sensorValues, (err, result) => {
+            if (err) {
+                console.error("Erro ao atualizar tabela sensors:", err); // Debugging error
+                return res.status(500).json({ error: "Erro ao atualizar sensor", details: err });
+            }
+
+            console.log("Sensor atualizado com sucesso:", result);
+            return res.status(200).json({ success: "Sensor atualizado com sucesso." });
+        });
     });
 });
+
 
 app.delete('/sensors/:id', (req, res) => {
     const sensorId = req.params.id;
 
-    // Desabilitar a verificação de chaves estrangeiras
-    const disableForeignKeysSql = "SET foreign_key_checks = 0;";
-    db.query(disableForeignKeysSql, (err) => {
-        if (err) {
-            return res.status(500).json({ error: "Erro ao desabilitar as chaves estrangeiras.", details: err });
-        }
-        // 1. Eliminar as referências na tabela read_sensors
-        const deleteReadSensorsSql = "DELETE FROM read_sensors WHERE id_read = ?";
-        db.query(deleteReadSensorsSql, [sensorId], (err) => {
-            if (err) return res.status(500).json({ error: "Erro ao eliminar referências na tabela read_sensors.", details: err });
+    // 1. Eliminar o sensor da tabela sensors (filha)
+    const deleteSensorSql = "DELETE FROM sensors WHERE id = ?";
+    db.query(deleteSensorSql, [sensorId], (err) => {
+        if (err) return res.status(500).json({ error: "Erro ao eliminar o sensor.", details: err });
 
-            // 2. Eliminar as referências na tabela config_sensor
+        // 2. Eliminar as referências na tabela sensor_models (pai)
+        const deleteSensorModelSql = "DELETE FROM sensor_models WHERE id_model = ?";
+        db.query(deleteSensorModelSql, [sensorId], (err) => {
+            if (err) return res.status(500).json({ error: "Erro ao eliminar referências na tabela sensor_model.", details: err });
+
+            // 3. Eliminar as referências na tabela config_sensor (pai)
             const deleteConfigSensorSql = "DELETE FROM config_sensor WHERE id_config = ?";
             db.query(deleteConfigSensorSql, [sensorId], (err) => {
                 if (err) return res.status(500).json({ error: "Erro ao eliminar referências na tabela config_sensor.", details: err });
 
-                // 3. Eliminar as referências na tabela sensor_model
-                const deleteSensorModelSql = "DELETE FROM sensor_models WHERE id_model = ?";
-                db.query(deleteSensorModelSql, [sensorId], (err) => {
-                    if (err) return res.status(500).json({ error: "Erro ao eliminar referências na tabela sensor_model.", details: err });
+                // 4. Eliminar as referências na tabela read_sensors (pai)
+                const deleteReadSensorsSql = "DELETE FROM read_sensors WHERE id_read = ?";
+                db.query(deleteReadSensorsSql, [sensorId], (err) => {
+                    if (err) return res.status(500).json({ error: "Erro ao eliminar referências na tabela read_sensors.", details: err });
 
-                    // 4. Eliminar o sensor da tabela sensors
-                    const deleteSensorSql = "DELETE FROM sensors WHERE id = ?";
-                    db.query(deleteSensorSql, [sensorId], (err) => {
-                        if (err) return res.status(500).json({ error: "Erro ao eliminar o sensor.", details: err });
-
-                        // Se tudo correr bem
-                        return res.status(200).json({ success: "Sensor e todas as referências eliminadas com sucesso." });
-                    });
                 });
             });
         });
     });
 });
 
-app.get('/warning', (req, res) => {
-    const sql = "SELECT * FROM warning";
-    db.query(sql, (err, data) => {
-        if (err) return res.json({ error: "Erro ao consultar a tabela warning.", details: err });
-        return res.json(data);
+// Tarefa automática para registar sensores a cada 5 minutos
+cron.schedule('*/5 * * * *', async () => {
+      console.log('Iniciando registo automático dos sensores...');
+  
+    const query = `
+      SELECT sensors.id, read_sensors.temperatura_atual AS temp_atual, 
+             read_sensors.humidade_atual AS hum_atual 
+      FROM sensors
+      LEFT JOIN read_sensors ON sensors.id_read = read_sensors.id_read;
+    `;
+  
+    db.query(query, (err, sensors) => {
+      if (err) {
+        console.error('Erro ao buscar dados dos sensores:', err);
+        return;
+      }
+  
+      // Inserir os registos na tabela `registo`
+      sensors.forEach((sensor) => {
+        const insertQuery = `
+          INSERT INTO registo (temperatura, humidade, id_sensor)
+          VALUES (?, ?, ?);
+        `;
+  
+        db.query(insertQuery, [sensor.temp_atual, sensor.hum_atual, sensor.id], (err) => {
+          if (err) {
+            console.error(`Erro ao registar sensor ID ${sensor.id}:`, err);
+          } else {
+            console.log(`Registo do sensor ID ${sensor.id} concluído.`);
+          }
+        });
+      });
     });
-});
+  }); 
+  
 
 app.listen(8081, () => {
     console.log("Servidor ouvindo na porta 8081");

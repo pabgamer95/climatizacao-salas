@@ -43,7 +43,7 @@ function App() {
             path="/technician"
             element={
              // <PrivateRoute role="technician">
-                <TechnicianPage />
+             <TechnicianPage />
               //</PrivateRoute>
             }
           />
